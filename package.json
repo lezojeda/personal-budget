@@ -4,9 +4,9 @@
   "description": "Personal budget project from Codecademy back-end engineer path",
   "main": "server.ts",
   "scripts": {
-    "build": "npx tsc",
+    "build": "tsc",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
-    "start": "node dist/index.js",
+    "start": "node dist/server.js",
     "test": "test"
   },
   "author": "Luz Ojeda",
