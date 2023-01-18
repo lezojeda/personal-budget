@@ -7,15 +7,20 @@
     "build": "tsc",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
     "start": "node dist/server.js",
-    "test": "test"
+    "test": "test",
+    "db:dev:rm": "docker compose rm dev-db -s -f -v",
+    "db:dev:up": "docker compose up dev-db -d",
+    "db:dev:restart": "npm run db:dev:rm && npm run db:dev:up && sleep 1 && npm run prisma:migrate:dev"
   },
   "author": "Luz Ojeda",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "morgan": "^1.10.0",
+    "pg": "^8.8.0",
     "typescript": "^4.9.4"
   },
   "devDependencies": {
@@ -23,6 +28,7 @@
     "@types/express": "^4.17.15",
     "@types/morgan": "^1.9.4",
     "@types/node": "^18.11.18",
+    "@types/pg": "^8.6.6",
     "concurrently": "^7.6.0",
     "nodemon": "^2.0.20"
   }

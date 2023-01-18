@@ -1,6 +1,10 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 import cors from 'cors'
-import express, { Request, Response, NextFunction} from 'express'
+import express, { Request, Response} from 'express'
 import morgan from 'morgan'
+import pool from './db'
 
 const app = express()
 
@@ -10,8 +14,15 @@ app.use(morgan('dev'))
 
 const PORT = process.env.PORT || 3000;
 
-app.get('/api', (req: Request, res: Response) => {
-    res.send('Hello world')
+app.get('/', async (req: Request, res: Response) => {
+    pool.query('SELECT * FROM test;', (err, results) => {
+        console.log(err, results)
+        if (err) {
+            res.send(err)
+        } else {
+            res.json(results.rows)
+        }
+    })
 })
 
 app.listen(PORT, () => {
