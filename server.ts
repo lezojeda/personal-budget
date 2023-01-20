@@ -16,7 +16,6 @@ const PORT = process.env.PORT || 3000;
 
 app.get('/', async (req: Request, res: Response) => {
     pool.query('SELECT * FROM test;', (err, results) => {
-        console.log(err, results)
         if (err) {
             res.send(err)
         } else {

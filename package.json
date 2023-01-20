@@ -30,6 +30,7 @@
     "@types/node": "^18.11.18",
     "@types/pg": "^8.6.6",
     "concurrently": "^7.6.0",
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.20"
   }
 }
