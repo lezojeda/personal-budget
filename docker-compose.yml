@@ -25,4 +25,4 @@ services:
     volumes:
     - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 networks:
-  personal-budget:
+  personal_budget:
