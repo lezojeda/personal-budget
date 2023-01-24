@@ -12,13 +12,13 @@ import {
   deserializeUserCallback,
   localStrategy,
   serializeUserCallback,
-} from "./config/passport"
+} from "./src/config/passport"
 import PGSimple from "connect-pg-simple"
 import { serve, setup } from 'swagger-ui-express'
-import { errorHandler, isAuthenticated } from "./middlewares"
+import { errorHandler, isAuthenticated } from "./src/middlewares"
 
-import pool from "./config/db"
-import { authRouter } from "./routes"
+import pool from "./src/config/db"
+import { authRouter, envelopesRouter } from "./src/routes"
 
 import docs from './docs/docs.json'
 
@@ -57,6 +57,7 @@ passport.use(localStrategy)
 app.use("*", isAuthenticated)
 
 app.use("/auth", authRouter)
+app.use("/envelopes", envelopesRouter)
 
 app.get("/", async (req: Request, res: Response, next: NextFunction) => {
   pool.query("SELECT * FROM users", (err, results) => {
