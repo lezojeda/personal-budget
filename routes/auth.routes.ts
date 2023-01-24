@@ -1,10 +1,9 @@
 import express, { NextFunction, Request, Response } from "express"
-import passport from "passport"
 import { signIn, signUp } from "../controllers/auth.controller"
 
 const authRouter = express.Router()
 
-authRouter.post("/signin", passport.authenticate("local"), signIn)
+authRouter.post("/signin", signIn)
 
 authRouter.post("/signup", signUp)
 

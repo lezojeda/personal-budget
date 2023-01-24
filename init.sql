@@ -36,5 +36,3 @@ CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 ALTER TABLE "categories" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "transactions" ADD FOREIGN KEY ("envelope_id") REFERENCES "categories" ("id");
-
-INSERT INTO "users" ("username", "hash") VALUES ('username', '123');

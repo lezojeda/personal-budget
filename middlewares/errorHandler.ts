@@ -1,11 +1,20 @@
 import { Request, Response, NextFunction } from "express"
+import { StatusCodes } from "http-status-codes"
+import { AppError } from "../classes/AppError"
 
 const errorHandler = (
-  err: Error,
+  err: AppError,
   req: Request,
   res: Response,
+  next: NextFunction
 ) => {
-  res.status(500).json({ message: err.message, name: err.name, stack: err.stack })
+  if (err.isOperational) {
+    res.status(err.httpStatusCode ?? 500).json({ message: err.message })
+  } else {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Internal server error" })
+  }
 }
 
 export { errorHandler }

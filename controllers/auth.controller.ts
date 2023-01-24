@@ -1,9 +1,28 @@
 import { NextFunction, Request, Response } from "express"
+import { STATUS_CODES } from "http"
+import { StatusCodes } from "http-status-codes"
+import passport from "passport"
+import { AppError } from "../classes/AppError"
 import pool from "../config/db"
 import { hashPassword } from "../utils/auth.utils"
 
-const signIn = async (req: Request, res: Response) => {
-  res.json({ message: "Signed in successfully" })
+const signIn = async (req: Request, res: Response, next: NextFunction) => {
+  passport.authenticate("local", (err, user: Express.User) => {
+    if (err) next(err)
+    if (!user) {
+      const badCredentialsError = new AppError({
+        message: "Bad Credentials",
+        httpStatusCode: StatusCodes.UNAUTHORIZED,
+      })
+
+      next(badCredentialsError)
+    } else {
+      req.logIn(user, (err) => {
+        if (err) next(err)
+        res.json({ message: "Signed in successfully" })
+      })
+    }
+  })(req, res, next)
 }
 
 const signUp = async (req: Request, res: Response, next: NextFunction) => {

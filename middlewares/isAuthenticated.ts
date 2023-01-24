@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from "express"
+import { StatusCodes } from "http-status-codes/build/cjs/status-codes"
+import { AppError } from "../classes/AppError"
 
 export const isAuthenticated = (
   req: Request,
@@ -12,6 +14,11 @@ export const isAuthenticated = (
   ) {
     next()
   } else {
-    res.status(403).json({ message: "You're not authorized" })
+    next(
+      new AppError({
+        httpStatusCode: StatusCodes.FORBIDDEN,
+        message: "You're not authorized",
+      })
+    )
   }
 }
