@@ -13,12 +13,14 @@ import {
   localStrategy,
   serializeUserCallback,
 } from "./config/passport"
+import PGSimple from "connect-pg-simple"
+import { serve, setup } from 'swagger-ui-express'
 import { errorHandler, isAuthenticated } from "./middlewares"
 
 import pool from "./config/db"
 import { authRouter } from "./routes"
 
-import PGSimple from "connect-pg-simple"
+import docs from './docs/docs.json'
 
 const app = express()
 
