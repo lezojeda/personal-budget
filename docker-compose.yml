@@ -19,7 +19,7 @@ services:
     environment: 
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
-      POSTGRES_DB: personal_budget-test
+      POSTGRES_DB: personal_budget_test
     networks:
       - personal_budget
     volumes:
