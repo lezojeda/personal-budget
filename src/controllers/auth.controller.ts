@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import passport from "passport"
 import { AppError } from "../classes/AppError"
-import { executeTransaction } from "../db"
+import { User } from "../models/user.model"
 import { hashPassword } from "../utils/auth.utils"
 
 const signIn = async (req: Request, res: Response, next: NextFunction) => {
@@ -30,11 +30,10 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
 
     const hash = await hashPassword(password, 10)
 
-    const insertUserText =
-      "INSERT INTO users(username, hash) VALUES($1, $2) RETURNING id"
-    const insertUserValues = [username, hash]
-
-    const queryResult = await executeTransaction(insertUserText, insertUserValues)
+    const queryResult = await User.create(
+      ["username", "hash"],
+      [username, hash]
+    )
 
     res.status(201).json({
       message: "User created successfully",

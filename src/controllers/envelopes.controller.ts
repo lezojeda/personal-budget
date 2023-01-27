@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction, query } from "express"
+import { Request, Response, NextFunction } from "express"
 import { StatusCodes } from "http-status-codes"
 import { AppError } from "../classes/AppError"
 import { ForbidenError } from "../classes/ForbidenError"
@@ -9,7 +9,28 @@ const createEnvelope = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {}
+) => {
+  const userId = req.session.passport?.user
+
+  if (userId) {
+    const { current_amount, limit, name } = req.body
+
+    const queryResult = await Envelope.create(
+      ["current_amount", "envelope_limit", "name", "user_id"],
+      [current_amount, limit, name, userId]
+    )
+
+    return res.status(201).json({
+      message: "Envelope created successfully",
+      user: {
+        id: queryResult.rows[0].id,
+        name,
+      },
+    })
+  }
+
+  next(new UnauthorizedError())
+}
 
 const getEnvelopes = async (
   req: Request,
@@ -18,7 +39,7 @@ const getEnvelopes = async (
 ) => {
   const userId = req.session.passport?.user
   if (userId) {
-    const queryResult = await Envelope.findAllFromUser(userId)
+    const queryResult = await Envelope.getAllFromUser(userId)
 
     return res.json(queryResult.rows)
   }
@@ -32,7 +53,7 @@ const getEnvelopeById = async (
   next: NextFunction
 ) => {
   const { id } = req.params
-  const queryResult = await Envelope.findById(id)
+  const queryResult = await Envelope.getById(id)
 
   if (queryResult.rowCount > 0) {
     const envelope = queryResult.rows[0]

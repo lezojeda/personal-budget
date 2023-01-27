@@ -8,7 +8,7 @@ const deserializeUserCallback = async (
   done: (err: any, user?: false | Express.User | null | undefined) => void
 ) => {
   try {
-    const queryResult = await User.findById(id)
+    const queryResult = await User.getById(id)
     done(null, queryResult.rows[0])
   } catch (error) {
     done(error)
