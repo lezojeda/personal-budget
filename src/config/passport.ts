@@ -1,14 +1,14 @@
 import { Strategy } from "passport-local"
-import { comparePasswords } from "../utils/auth.utils"
-import pool from "./db"
+import { comparePasswords } from '../utils/auth.utils'
+import { dbQuery } from '../db'
+import { User } from '../models/user.model'
 
 const deserializeUserCallback = async (
   id: string,
   done: (err: any, user?: false | Express.User | null | undefined) => void
 ) => {
   try {
-    const queryText = "SELECT * FROM users WHERE id = $1"
-    const queryResult = await pool.query(queryText, [id])
+    const queryResult = await User.findById(id)
     done(null, queryResult.rows[0])
   } catch (error) {
     done(error)
@@ -25,7 +25,7 @@ const serializeUserCallback = (
 const localStrategy = new Strategy(async (username, password, done) => {
   try {
     const queryText = "SELECT * FROM users WHERE username = $1"
-    const queryResult = await pool.query(queryText, [username])
+    const queryResult = await dbQuery(queryText, [username])
 
     const user = queryResult.rows[0]
     if (!user) return done(null, false)

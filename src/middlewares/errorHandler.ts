@@ -11,6 +11,7 @@ const errorHandler = (
   if (err.isOperational) {
     res.status(err.httpStatusCode ?? 500).json({ message: err.message })
   } else {
+    console.error(err.stack)
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Internal server error" })

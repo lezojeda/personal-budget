@@ -17,7 +17,6 @@ import PGSimple from "connect-pg-simple"
 import { serve, setup } from 'swagger-ui-express'
 import { errorHandler, isAuthenticated } from "./src/middlewares"
 
-import pool from "./src/config/db"
 import { authRouter, envelopesRouter } from "./src/routes"
 
 import docs from './docs/docs.json'
@@ -58,16 +57,6 @@ app.use("*", isAuthenticated)
 
 app.use("/auth", authRouter)
 app.use("/envelopes", envelopesRouter)
-
-app.get("/", async (req: Request, res: Response, next: NextFunction) => {
-  pool.query("SELECT * FROM users", (err, results) => {
-    if (err) {
-      next(err)
-    } else {
-      res.json(req.user)
-    }
-  })
-})
 
 app.use(errorHandler)
 

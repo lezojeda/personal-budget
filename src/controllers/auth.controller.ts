@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express"
-import { STATUS_CODES } from "http"
 import { StatusCodes } from "http-status-codes"
 import passport from "passport"
 import { AppError } from "../classes/AppError"
-import pool from "../config/db"
+import { executeTransaction } from "../db"
 import { hashPassword } from "../utils/auth.utils"
 
 const signIn = async (req: Request, res: Response, next: NextFunction) => {
@@ -26,10 +25,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const signUp = async (req: Request, res: Response, next: NextFunction) => {
-  const client = await pool.connect()
   try {
-    await client.query("BEGIN")
-
     const { username, password } = req.body
 
     const hash = await hashPassword(password, 10)
@@ -37,9 +33,9 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
     const insertUserText =
       "INSERT INTO users(username, hash) VALUES($1, $2) RETURNING id"
     const insertUserValues = [username, hash]
-    const queryResult = await client.query(insertUserText, insertUserValues)
 
-    await client.query("COMMIT")
+    const queryResult = await executeTransaction(insertUserText, insertUserValues)
+
     res.status(201).json({
       message: "User created successfully",
       user: {
@@ -48,10 +44,7 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
       },
     })
   } catch (error) {
-    await client.query("ROLLBACK")
     next(error)
-  } finally {
-    client.release()
   }
 }
 
