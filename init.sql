@@ -11,7 +11,7 @@ CREATE TABLE "envelopes" (
   "current_amount" money,
   "limit" money,
   "name" varchar(50) NOT NULL,
-  "user_id" int UNIQUE
+  "user_id" int
 );
 
 CREATE TABLE "transactions" (
