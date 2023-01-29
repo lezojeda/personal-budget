@@ -5,6 +5,21 @@ import { ForbidenError } from "../classes/ForbidenError"
 import { UnauthorizedError } from "../classes/UnauthorizedError"
 import { Envelope } from "../models/envelope.model"
 
+const getEnvelopes = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const userId = req.session.passport?.user
+  if (userId) {
+    const queryResult = await Envelope.getAllFromUser(userId)
+
+    return res.json(queryResult.rows)
+  }
+
+  next(new UnauthorizedError())
+}
+
 const createEnvelope = async (
   req: Request,
   res: Response,
@@ -32,42 +47,14 @@ const createEnvelope = async (
   next(new UnauthorizedError())
 }
 
-const getEnvelopes = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const userId = req.session.passport?.user
-  if (userId) {
-    const queryResult = await Envelope.getAllFromUser(userId)
+const deleteEnvelopeById = async (req: Request, res: Response) => {
+  await Envelope.deleteById(req.params.id)
 
-    return res.json(queryResult.rows)
-  }
-
-  next(new UnauthorizedError())
+  res.status(StatusCodes.NO_CONTENT).send()
 }
 
-const getEnvelopeById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { id } = req.params
-  const queryResult = await Envelope.getById(id)
-
-  if (queryResult.rowCount > 0) {
-    const envelope = queryResult.rows[0]
-    if (req.session.passport?.user !== envelope.user_id) {
-      return next(new ForbidenError())
-    } else {
-      return res.json(envelope)
-    }
-  }
-  const notFoundError = new AppError({
-    message: `The envelope with id ${id} doesn't exist`,
-    httpStatusCode: StatusCodes.NOT_FOUND,
-  })
-  next(notFoundError)
+const getEnvelopeById = async (req: Request, res: Response) => {
+  return res.json(req.envelope)
 }
 
-export { createEnvelope, getEnvelopeById, getEnvelopes }
+export { getEnvelopes, createEnvelope, deleteEnvelopeById, getEnvelopeById }

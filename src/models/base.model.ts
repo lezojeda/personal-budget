@@ -6,13 +6,19 @@ class Base {
   static table: string
 
   static async create(columns: string[], values: string[]) {
-    const insertText = `INSERT INTO ${
+    const transactionText = `INSERT INTO ${
       this.table
     }(${columns.join()}) VALUES(${values
       .map((value, index) => "$" + (index + 1))
       .join()}) RETURNING id`
 
-    return await executeTransaction(insertText, values)
+    return await executeTransaction(transactionText, values)
+  }
+
+  static async deleteById(id: string) {
+    const transactionText = `DELETE FROM ${this.table} WHERE id = $1`
+
+    return await executeTransaction(transactionText, [id])
   }
 
   static async getAllFromUser(userId: string) {

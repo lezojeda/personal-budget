@@ -1,2 +1,2 @@
-export * from './isAuthenticated'
-export * from './errorHandler'
+export * from './isAuthenticated.middleware'
+export * from './errorHandler.middleware'
