@@ -4,6 +4,7 @@ import {
   deleteEnvelopeById,
   getEnvelopeById,
   getEnvelopes,
+  updateEnvelopeById,
 } from "../controllers"
 import { getEnvelopeById as getEnvelopeByIdMiddleware } from "../middlewares/getEnvelopeById.middleware"
 
@@ -16,5 +17,7 @@ envelopesRouter.post("/", createEnvelope)
 envelopesRouter.delete("/:id", getEnvelopeByIdMiddleware, deleteEnvelopeById)
 
 envelopesRouter.get("/:id", getEnvelopeByIdMiddleware, getEnvelopeById)
+
+envelopesRouter.patch("/:id", getEnvelopeByIdMiddleware, updateEnvelopeById)
 
 export { envelopesRouter }

@@ -54,7 +54,18 @@ const deleteEnvelopeById = async (req: Request, res: Response) => {
 }
 
 const getEnvelopeById = async (req: Request, res: Response) => {
-  return res.json(req.envelope)
+  res.json(req.envelope)
 }
 
-export { getEnvelopes, createEnvelope, deleteEnvelopeById, getEnvelopeById }
+const updateEnvelopeById = async (req: Request, res: Response) => {
+  const queryResult = await Envelope.updateById(req.params.id, req.body)
+  res.json(queryResult.rows[0])
+}
+
+export {
+  getEnvelopes,
+  createEnvelope,
+  deleteEnvelopeById,
+  getEnvelopeById,
+  updateEnvelopeById,
+}

@@ -31,6 +31,20 @@ class Base {
 
     return await dbQuery(queryText, [id])
   }
+
+  static async updateById(id: string, body: { [index: string]: any }) {
+    const setClause = Object.keys(body)
+      .map((key, index) => {
+        return `${key} = $${index + 1}`
+      })
+      .join()
+
+    const values = [...Object.values(body), id]
+
+    const queryText = `UPDATE ${this.table} SET ${setClause} WHERE id = $${values.length} RETURNING *`
+
+    return await dbQuery(queryText, values)
+  }
 }
 
 export { Base }
