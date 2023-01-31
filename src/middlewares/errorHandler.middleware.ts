@@ -17,12 +17,13 @@ const errorHandler = (
     res.status(StatusCodes.BAD_REQUEST).json(response)
   } else {
     if (err.isOperational) {
-      response.errors.push({ message: "Internal server error" })
+      response.errors.push({ message: err.message })
       res.status(err.httpStatusCode ?? 500).json(response)
     } else {
-      response.errors.push({ message: err.message })
       console.error(err.stack)
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response)
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Internal server error" })
     }
   }
 }

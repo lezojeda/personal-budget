@@ -30,7 +30,7 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
 
     const hash = await hashPassword(password, 10)
 
-    const queryResult = await User.create(
+    const queryResult = await new User().create(
       ["username", "hash"],
       [username, hash]
     )

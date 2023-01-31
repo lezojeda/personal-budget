@@ -2,10 +2,8 @@ import { Request, Response, NextFunction } from "express"
 import { matchedData } from "express-validator/src/matched-data"
 import { validationResult } from "express-validator/src/validation-result"
 import { StatusCodes } from "http-status-codes"
-import { AppError } from "../classes/AppError"
-import { ForbidenError } from "../classes/ForbidenError"
 import { UnauthorizedError } from "../classes/UnauthorizedError"
-import { Envelope } from "../models/envelope.model"
+import { Envelope } from "../models/Envelope.model"
 
 const getEnvelopes = async (
   req: Request,
@@ -14,7 +12,7 @@ const getEnvelopes = async (
 ) => {
   const userId = req.session.passport?.user
   if (userId) {
-    const queryResult = await Envelope.getAllFromUser(userId)
+    const queryResult = await new Envelope().getAllFromUser(userId.toString())
 
     return res.json(queryResult.rows)
   }
@@ -43,7 +41,7 @@ const createEnvelope = async (
   if (userId) {
     const { current_amount, limit, name } = req.body
 
-    const queryResult = await Envelope.create(
+    const queryResult = await new Envelope().create(
       ["current_amount", "envelope_limit", "name", "user_id"],
       [current_amount, limit, name, userId]
     )
@@ -61,7 +59,7 @@ const createEnvelope = async (
 }
 
 const deleteEnvelopeById = async (req: Request, res: Response) => {
-  await Envelope.deleteById(req.params.id)
+  await new Envelope().deleteById(req.params.id)
 
   res.status(StatusCodes.NO_CONTENT).send()
 }
@@ -72,7 +70,7 @@ const getEnvelopeById = async (req: Request, res: Response) => {
 
 const updateEnvelopeById = async (req: Request, res: Response) => {
   const bodyData = matchedData(req, { locations: ["body"] })
-  const queryResult = await Envelope.updateById(req.params.id, bodyData)
+  const queryResult = await new Envelope().updateById(req.params.id, bodyData)
   res.json(queryResult.rows[0])
 }
 

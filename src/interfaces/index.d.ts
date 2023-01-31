@@ -1,10 +1,15 @@
-declare namespace Express {
-  interface User {
-    id: string
-  }
+import { Envelope } from "../models/Envelope.model"
 
-  interface Request {
-    // TODO: Create interfaces
-    envelope: any
+export {}
+
+declare global {
+  namespace Express {
+    interface User {
+      id: number
+    }
+
+    interface Request {
+      envelope: IEnvelope
+    }
   }
 }

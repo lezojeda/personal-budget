@@ -7,7 +7,7 @@ import {
   getEnvelopes,
   updateEnvelopeById,
 } from "../controllers"
-import { getEnvelopeById as getEnvelopeByIdMiddleware } from "../middlewares/getEnvelopeById.middleware"
+import { getEnvelopeById as getEnvelopeByIdMiddleware } from "../middlewares"
 
 const envelopesRouter = express.Router()
 

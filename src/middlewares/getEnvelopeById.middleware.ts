@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { AppError } from "../classes/AppError"
 import { ForbidenError } from "../classes/ForbidenError"
-import { Envelope } from "../models/envelope.model"
+import { Envelope } from "../models/Envelope.model"
 
 export const getEnvelopeById = async (
   req: Request,
@@ -10,11 +10,16 @@ export const getEnvelopeById = async (
   next: NextFunction
 ) => {
   const { id } = req.params
-  const queryResult = await Envelope.getById(id)
+  const queryResult = await new Envelope().getById(id)
 
   if (queryResult.rowCount > 0) {
     const envelope = queryResult.rows[0]
-    if (req.session.passport?.user !== envelope.user_id) {
+
+    const requestingUser = req.session.passport?.user
+    const envelopeOwnerUser =  envelope.user_id
+    const usersMatch = requestingUser === envelopeOwnerUser
+
+    if (!usersMatch) {
       return next(new ForbidenError())
     } else {
       req.envelope = envelope

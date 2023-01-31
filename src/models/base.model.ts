@@ -1,38 +1,38 @@
+import { QueryResultRow } from 'pg'
 import { dbQuery, executeTransaction } from "../db"
+import { TableNames } from '../db/constants'
 
-class Base {
-  id: number
+abstract class Base<T extends QueryResultRow> {
+  public table: TableNames
 
-  static table: string
-
-  static async create(columns: string[], values: string[]) {
+  public async create(columns: string[], values: string[]) {
     const transactionText = `INSERT INTO ${
       this.table
     }(${columns.join()}) VALUES(${values
       .map((value, index) => "$" + (index + 1))
       .join()}) RETURNING id`
 
-    return await executeTransaction(transactionText, values)
+    return await executeTransaction<T>(transactionText, values)
   }
 
-  static async deleteById(id: string) {
+  public async deleteById(id: string) {
     const transactionText = `DELETE FROM ${this.table} WHERE id = $1`
 
-    return await executeTransaction(transactionText, [id])
+    return await executeTransaction<T>(transactionText, [id])
   }
 
-  static async getAllFromUser(userId: string) {
+  public async getAllFromUser(userId: string) {
     const queryText = `SELECT * FROM ${this.table} WHERE user_id = $1`
-    return await dbQuery(queryText, [userId])
+    return await dbQuery<T>(queryText, [userId])
   }
 
-  static async getById(id: string) {
+  public async getById(id: string) {
     const queryText = `SELECT * FROM ${this.table} WHERE id = $1`
 
-    return await dbQuery(queryText, [id])
+    return await dbQuery<T>(queryText, [id])
   }
 
-  static async updateById(id: string, body: { [index: string]: any }) {
+  public async updateById(id: string, body: { [index: string]: any }) {
     const setClause = Object.keys(body)
       .map((key, index) => {
         return `${key} = $${index + 1}`
@@ -43,7 +43,7 @@ class Base {
 
     const queryText = `UPDATE ${this.table} SET ${setClause} WHERE id = $${values.length} RETURNING *`
 
-    return await dbQuery(queryText, values)
+    return await dbQuery<T>(queryText, values)
   }
 }
 

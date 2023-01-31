@@ -1,7 +1,7 @@
 import dotenv from "dotenv"
 dotenv.config()
 
-import express, { NextFunction, Request, Response } from "express"
+import express from "express"
 
 import cors from "cors"
 import morgan from "morgan"
