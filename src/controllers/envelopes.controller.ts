@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from "express"
+import { matchedData } from "express-validator/src/matched-data"
+import { validationResult } from "express-validator/src/validation-result"
 import { StatusCodes } from "http-status-codes"
 import { AppError } from "../classes/AppError"
 import { ForbidenError } from "../classes/ForbidenError"
@@ -25,6 +27,17 @@ const createEnvelope = async (
   res: Response,
   next: NextFunction
 ) => {
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    const errArray = errors.array()
+
+    return next(
+      errArray.map((e) => {
+        return { message: `${e.param}: ${e.msg}` }
+      })
+    )
+  }
   const userId = req.session.passport?.user
 
   if (userId) {
@@ -58,7 +71,8 @@ const getEnvelopeById = async (req: Request, res: Response) => {
 }
 
 const updateEnvelopeById = async (req: Request, res: Response) => {
-  const queryResult = await Envelope.updateById(req.params.id, req.body)
+  const bodyData = matchedData(req, { locations: ["body"] })
+  const queryResult = await Envelope.updateById(req.params.id, bodyData)
   res.json(queryResult.rows[0])
 }
 

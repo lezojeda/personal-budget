@@ -3,18 +3,27 @@ import { StatusCodes } from "http-status-codes"
 import { AppError } from "../classes/AppError"
 
 const errorHandler = (
-  err: AppError,
+  err: AppError | AppError[],
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  if (err.isOperational) {
-    res.status(err.httpStatusCode ?? 500).json({ message: err.message })
+  const response: { errors: { message: string }[] } = {
+    errors: [],
+  }
+
+  if (err instanceof Array) {
+    err.forEach((err) => response.errors.push({ message: err.message }))
+    res.status(StatusCodes.BAD_REQUEST).json(response)
   } else {
-    console.error(err.stack)
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ message: "Internal server error" })
+    if (err.isOperational) {
+      response.errors.push({ message: "Internal server error" })
+      res.status(err.httpStatusCode ?? 500).json(response)
+    } else {
+      response.errors.push({ message: err.message })
+      console.error(err.stack)
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response)
+    }
   }
 }
 
