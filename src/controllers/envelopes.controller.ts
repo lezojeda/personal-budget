@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express"
 import { matchedData } from "express-validator/src/matched-data"
-import { validationResult } from "express-validator/src/validation-result"
 import { StatusCodes } from "http-status-codes"
 import { UnauthorizedError } from "../classes/UnauthorizedError"
 import { Envelope } from "../models/Envelope.model"
@@ -25,18 +24,7 @@ const createEnvelope = async (
   res: Response,
   next: NextFunction
 ) => {
-  const errors = validationResult(req)
-
-  if (!errors.isEmpty()) {
-    const errArray = errors.array()
-
-    return next(
-      errArray.map((e) => {
-        return { message: `${e.param}: ${e.msg}` }
-      })
-    )
-  }
-  const userId = req.session.passport?.user
+const userId = req.session.passport?.user
 
   if (userId) {
     const { current_amount, limit, name } = req.body
@@ -48,9 +36,8 @@ const createEnvelope = async (
 
     return res.status(201).json({
       message: "Envelope created successfully",
-      user: {
-        id: queryResult.rows[0].id,
-        name,
+      envelope: {
+        ...queryResult.rows[0]
       },
     })
   }
@@ -69,7 +56,7 @@ const getEnvelopeById = async (req: Request, res: Response) => {
 }
 
 const updateEnvelopeById = async (req: Request, res: Response) => {
-  const bodyData = matchedData(req, { locations: ["body"] })
+  const bodyData = matchedData(req, { locations: ["body"] },)
   const queryResult = await new Envelope().updateById(req.params.id, bodyData)
   res.json(queryResult.rows[0])
 }

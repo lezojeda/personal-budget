@@ -21,9 +21,8 @@ const errorHandler = (
       res.status(err.httpStatusCode ?? 500).json(response)
     } else {
       console.error(err.stack)
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ message: "Internal server error" })
+      response.errors.push({ message: "Internal server error" })
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(response)
     }
   }
 }

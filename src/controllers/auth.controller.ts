@@ -10,7 +10,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
     if (err) next(err)
     if (!user) {
       const badCredentialsError = new AppError({
-        message: "Bad Credentials",
+        message: "Bad credentials",
         httpStatusCode: StatusCodes.UNAUTHORIZED,
       })
 
@@ -43,6 +43,24 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
       },
     })
   } catch (error) {
+    /**
+     * Error 23505 corresponds to a unique constraint violation
+     */
+    if (error instanceof Error) {
+      const isError23505 = "code" in error && error.code === "23505"
+      const isUsernameConstraintKey =
+        "constraint" in error && error.constraint === "users_username_key"
+
+      if (isError23505 && isUsernameConstraintKey) {
+        return next(
+          new AppError({
+            message: "Username already taken. Try another.",
+            httpStatusCode: StatusCodes.CONFLICT,
+          })
+        )
+      }
+    }
+
     next(error)
   }
 }

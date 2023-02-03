@@ -27,7 +27,7 @@ export const getEnvelopeById = async (
     }
   }
   const notFoundError = new AppError({
-    message: `The envelope with id ${id} doesn't exist`,
+    message: `The envelope with id ${id} was not found`,
     httpStatusCode: StatusCodes.NOT_FOUND,
   })
   return next(notFoundError)

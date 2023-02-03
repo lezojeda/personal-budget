@@ -1,11 +1,38 @@
 import express, { NextFunction, Request, Response } from "express"
+import { body } from "express-validator"
+import { MESSAGES } from "../constants/messages"
 import { signIn, signUp } from "../controllers/auth.controller"
+import { validateRequestBody } from "../middlewares/validateRequestBody.middleware"
 
 const authRouter = express.Router()
 
-authRouter.post("/signin", signIn)
+authRouter.post(
+  "/signin",
+  body("username", MESSAGES.AUTH.USERNAME_REQUIRED)
+    .trim()
+    .notEmpty()
+    .isString(),
+  body("password", MESSAGES.AUTH.PASSWORD_REQUIRED)
+    .trim()
+    .notEmpty()
+    .isString(),
+  validateRequestBody,
+  signIn
+)
 
-authRouter.post("/signup", signUp)
+authRouter.post(
+  "/signup",
+  body("username", MESSAGES.AUTH.USERNAME_REQUIRED)
+    .trim()
+    .notEmpty()
+    .isString(),
+  body("password", MESSAGES.AUTH.PASSWORD_REQUIRED)
+    .trim()
+    .notEmpty()
+    .isString(),
+  validateRequestBody,
+  signUp
+)
 
 authRouter.post(
   "/signout",
@@ -15,7 +42,7 @@ authRouter.post(
         return next(err)
       }
     })
-    res.send(req.session)
+    res.status(204).send()
   }
 )
 
