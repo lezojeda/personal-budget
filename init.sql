@@ -11,7 +11,9 @@ CREATE TABLE "envelopes" (
   "current_amount" money,
   "envelope_limit" money,
   "name" varchar(50) NOT NULL,
-  "user_id" int
+  "user_id" int,
+  CONSTRAINT positive_current_amount CHECK ("current_amount" > '0.00'::money),
+  CONSTRAINT positive_envelope_limit CHECK ("envelope_limit" > '0.00'::money)
 );
 
 CREATE TABLE "transactions" (

@@ -1,7 +1,7 @@
 import express from "express"
 import { body } from "express-validator"
 import { updateUser } from "../controllers"
-import { usersErrorHandler } from "../middlewares/usersErrorHandler.middleware"
+import { usersErrorHandler, validateRequestBody } from "../middlewares"
 
 const usersRouter = express.Router()
 
@@ -23,6 +23,7 @@ usersRouter.patch(
     .optional({ checkFalsy: true })
     .escape(),
   updateUser,
+  validateRequestBody,
   usersErrorHandler
 )
 

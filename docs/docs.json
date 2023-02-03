@@ -279,6 +279,91 @@
         }
       }
     },
+    "/envelopes/transfer": {
+      "post": {
+        "tags": ["envelopes"],
+        "summary": "Transfter a certain amount from one envelope to another",
+        "description": "The amount specified in the request body is subtracted from the current_amount of the envelope id specified in the query param 'from' and that same amount is added to the 'to' envelop",
+        "operationId": "transferBudgets",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "from",
+            "description": "The origin envelope to transfer money FROM",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "to",
+            "description": "The destination envelope to transfer money TO",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Amount to transfer",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "format": "float",
+                    "example": "100"
+                  }
+                },
+                "required": ["amount"]
+              }
+            }
+          },
+          "required": "true"
+        },
+        "responses": {
+          "200": {
+            "description": "Envelopes affected by the budget transfer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Envelope"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "current_amount": "$500.00",
+                    "envelope_limit": null,
+                    "name": "Groceries",
+                    "user_id": 1
+                  },
+                  {
+                    "id": 2,
+                    "current_amount": "$700.00",
+                    "envelope_limit": "$900.50",
+                    "name": "Gas",
+                    "user_id": 1
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/500InternalServerError"
+          }
+        }
+      }
+    },
     "/auth/signin": {
       "post": {
         "tags": ["auth"],
@@ -558,7 +643,7 @@
             "example": {
               "errors": [
                 {
-                  "message": "User is not allowed to access the requested resource"
+                  "message": "You are not alloewd to access the resource of id 2"
                 }
               ]
             }

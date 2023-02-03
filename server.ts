@@ -20,7 +20,6 @@ import { errorHandler, isAuthenticated } from "./src/middlewares"
 import { authRouter, envelopesRouter, usersRouter } from "./src/routes"
 
 import docs from './docs/docs.json'
-import { usersErrorHandler } from './src/middlewares/usersErrorHandler.middleware'
 
 const app = express()
 

@@ -1,15 +1,15 @@
 import express from "express"
-import { body, oneOf } from "express-validator"
+import { body, query } from "express-validator"
 import { MESSAGES } from "../constants/messages"
 import {
   createEnvelope,
   deleteEnvelopeById,
   getEnvelopeById,
   getEnvelopes,
+  transferBudgets,
   updateEnvelopeById,
 } from "../controllers"
-import { getEnvelopeById as getEnvelopeByIdMiddleware } from "../middlewares"
-import { validateRequestBody } from "../middlewares/validateRequestBody.middleware"
+import { handleValidationResult, validateRequestBody } from "../middlewares"
 
 const envelopesRouter = express.Router()
 
@@ -19,22 +19,37 @@ envelopesRouter.post(
   "/",
   body("current_amount", MESSAGES.ENVELOPES.CURRENT_AMOUNT_REQUIRED)
     .trim()
-    .isFloat(),
+    .isFloat({ min: 0 }),
   body("name", MESSAGES.ENVELOPES.NAME_REQUIRED).trim().isString(),
   body("envelope_limit", MESSAGES.ENVELOPES.ENVELOPE_LIMIT_REQUIRED)
     .trim()
-    .isFloat(),
+    .isFloat({ min: 0 }),
+  handleValidationResult,
   validateRequestBody,
   createEnvelope
 )
 
-envelopesRouter.delete("/:id", getEnvelopeByIdMiddleware, deleteEnvelopeById)
+envelopesRouter.post(
+  "/transfer",
+  query(
+    "from",
+    "Include a query parameter indicating the envelope id to transfer FROM"
+  ).isInt(),
+  query(
+    "to",
+    "Include a query parameter indicating the envelope id to transfer TO"
+  ).isString(),
+  body("amount", "Include an amount which must be a number").trim().isFloat(),
+  handleValidationResult,
+  transferBudgets
+)
 
-envelopesRouter.get("/:id", getEnvelopeByIdMiddleware, getEnvelopeById)
+envelopesRouter.delete("/:id", deleteEnvelopeById)
+
+envelopesRouter.get("/:id", getEnvelopeById)
 
 envelopesRouter.patch(
   "/:id",
-  getEnvelopeByIdMiddleware,
   body("name", MESSAGES.ENVELOPES.NAME_TYPE)
     .trim()
     .isString()
@@ -42,9 +57,10 @@ envelopesRouter.patch(
     .escape(),
   body("envelope_limit", MESSAGES.ENVELOPES.ENVELOPE_LIMIT_TYPE)
     .trim()
-    .isFloat()
+    .isFloat({ min: 0 })
     .optional({ checkFalsy: true })
     .escape(),
+  handleValidationResult,
   validateRequestBody,
   updateEnvelopeById
 )
