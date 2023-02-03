@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express"
 import { body } from "express-validator"
 import { MESSAGES } from "../constants/messages"
 import { signIn, signUp } from "../controllers/auth.controller"
+import { usersErrorHandler } from "../middlewares/usersErrorHandler.middleware"
 import { validateRequestBody } from "../middlewares/validateRequestBody.middleware"
 
 const authRouter = express.Router()
@@ -31,7 +32,8 @@ authRouter.post(
     .notEmpty()
     .isString(),
   validateRequestBody,
-  signUp
+  signUp,
+  usersErrorHandler
 )
 
 authRouter.post(

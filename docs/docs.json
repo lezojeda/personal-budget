@@ -26,6 +26,10 @@
     {
       "name": "auth",
       "description": "Authentication related operations"
+    },
+    {
+      "name": "users",
+      "description": "User related operations"
     }
   ],
   "paths": {
@@ -408,21 +412,7 @@
             "$ref": "#/components/responses/400BadRequest"
           },
           "409": {
-            "description": "Username is already in use",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                },
-                "example": {
-                  "errors": [
-                    {
-                      "message": "Username already taken. Try another."
-                    }
-                  ]
-                }
-              }
-            }
+            "$ref": "#/components/responses/409409UsernameConflict"
           },
           "500": {
             "$ref": "#/components/responses/500InternalServerError"
@@ -442,6 +432,61 @@
           },
           "401": {
             "$ref": "#/components/responses/401Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/500InternalServerError"
+          }
+        }
+      }
+    },
+    "/users": {
+      "patch": {
+        "tags": ["users"],
+        "summary": "Updates the user signed in",
+        "operationId": "updateUser",
+        "requestBody": {
+          "description": "Properties to update the user with",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "savings": {
+                    "type": "number",
+                    "format": "float",
+                    "example": "2000.0"
+                  },
+                  "salary": {
+                    "type": "number",
+                    "format": "float",
+                    "example": "3000.0"
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "newUsername"
+                  }
+                }
+              }
+            }
+          },
+          "required": "true"
+        },
+        "responses": {
+          "200": {
+            "description": "The user with its updated properties",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "409": {
+            "$ref": "#/components/responses/409409UsernameConflict"
           },
           "500": {
             "$ref": "#/components/responses/500InternalServerError"
@@ -531,6 +576,23 @@
               "errors": [
                 {
                   "message": "The envelope with id 3 was not found"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "409UsernameConflict": {
+        "description": "Username is already in use",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "errors": [
+                {
+                  "message": "Username already taken. Try another."
                 }
               ]
             }

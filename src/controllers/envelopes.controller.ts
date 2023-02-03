@@ -24,41 +24,64 @@ const createEnvelope = async (
   res: Response,
   next: NextFunction
 ) => {
-const userId = req.session.passport?.user
+  try {
+    const userId = req.session.passport?.user
 
-  if (userId) {
-    const { current_amount, limit, name } = req.body
+    if (userId) {
+      const { current_amount, limit, name } = req.body
 
-    const queryResult = await new Envelope().create(
-      ["current_amount", "envelope_limit", "name", "user_id"],
-      [current_amount, limit, name, userId]
-    )
+      const queryResult = await new Envelope().create(
+        ["current_amount", "envelope_limit", "name", "user_id"],
+        [current_amount, limit, name, userId]
+      )
 
-    return res.status(201).json({
-      message: "Envelope created successfully",
-      envelope: {
-        ...queryResult.rows[0]
-      },
-    })
+      return res.status(201).json({
+        message: "Envelope created successfully",
+        envelope: {
+          ...queryResult.rows[0],
+        },
+      })
+    }
+
+    next(new UnauthorizedError())
+  } catch (error) {
+    next(error)
   }
-
-  next(new UnauthorizedError())
 }
 
-const deleteEnvelopeById = async (req: Request, res: Response) => {
-  await new Envelope().deleteById(req.params.id)
+const deleteEnvelopeById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    await new Envelope().deleteById(req.params.id)
 
-  res.status(StatusCodes.NO_CONTENT).send()
+    res.status(StatusCodes.NO_CONTENT).send()
+  } catch (error) {
+    next(error)
+  }
 }
 
 const getEnvelopeById = async (req: Request, res: Response) => {
   res.json(req.envelope)
 }
 
-const updateEnvelopeById = async (req: Request, res: Response) => {
-  const bodyData = matchedData(req, { locations: ["body"] },)
-  const queryResult = await new Envelope().updateById(req.params.id, bodyData)
-  res.json(queryResult.rows[0])
+const updateEnvelopeById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const bodyData = matchedData(req, { locations: ["body"] })
+    const updatedEnvelope = await new Envelope().updateById(
+      req.params.id,
+      bodyData
+    )
+    res.json(updatedEnvelope)
+  } catch (error) {
+    next(error)
+  }
 }
 
 export {

@@ -15,9 +15,9 @@ export const getEnvelopeById = async (
   if (queryResult.rowCount > 0) {
     const envelope = queryResult.rows[0]
 
-    const requestingUser = req.session.passport?.user
-    const envelopeOwnerUser =  envelope.user_id
-    const usersMatch = requestingUser === envelopeOwnerUser
+    const requestingUserId = req.session.passport?.user
+    const envelopeOwnerUserId =  envelope.user_id
+    const usersMatch = requestingUserId === envelopeOwnerUserId
 
     if (!usersMatch) {
       return next(new ForbidenError())

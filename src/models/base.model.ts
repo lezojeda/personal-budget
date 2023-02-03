@@ -43,7 +43,9 @@ abstract class Base<T extends QueryResultRow> {
 
     const queryText = `UPDATE ${this.table} SET ${setClause} WHERE id = $${values.length} RETURNING *`
 
-    return await dbQuery<T>(queryText, values)
+    const queryResult = await dbQuery<T>(queryText, values)
+
+    return queryResult.rows[0]
   }
 }
 

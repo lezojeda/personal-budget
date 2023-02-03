@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import passport from "passport"
 import { AppError } from "../classes/AppError"
-import { User } from "../models/user.model"
+import { User } from "../models/User.model"
 import { hashPassword } from "../utils/auth.utils"
 
 const signIn = async (req: Request, res: Response, next: NextFunction) => {
@@ -43,24 +43,6 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
       },
     })
   } catch (error) {
-    /**
-     * Error 23505 corresponds to a unique constraint violation
-     */
-    if (error instanceof Error) {
-      const isError23505 = "code" in error && error.code === "23505"
-      const isUsernameConstraintKey =
-        "constraint" in error && error.constraint === "users_username_key"
-
-      if (isError23505 && isUsernameConstraintKey) {
-        return next(
-          new AppError({
-            message: "Username already taken. Try another.",
-            httpStatusCode: StatusCodes.CONFLICT,
-          })
-        )
-      }
-    }
-
     next(error)
   }
 }

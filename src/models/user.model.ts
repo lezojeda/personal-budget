@@ -1,4 +1,4 @@
-import { dbQuery } from '../db'
+import { dbQuery } from "../db"
 import { TableNames } from "../db/constants"
 import { IUser } from "../interfaces/User.interface"
 import { Base } from "./Base.model"

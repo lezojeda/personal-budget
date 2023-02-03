@@ -17,9 +17,10 @@ import PGSimple from "connect-pg-simple"
 import { serve, setup } from 'swagger-ui-express'
 import { errorHandler, isAuthenticated } from "./src/middlewares"
 
-import { authRouter, envelopesRouter } from "./src/routes"
+import { authRouter, envelopesRouter, usersRouter } from "./src/routes"
 
 import docs from './docs/docs.json'
+import { usersErrorHandler } from './src/middlewares/usersErrorHandler.middleware'
 
 const app = express()
 
@@ -57,6 +58,7 @@ app.use("*", isAuthenticated)
 
 app.use("/auth", authRouter)
 app.use("/envelopes", envelopesRouter)
+app.use("/users", usersRouter)
 
 app.use(errorHandler)
 
