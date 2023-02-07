@@ -1,11 +1,11 @@
-import { QueryResultRow } from 'pg'
+import { QueryResultRow } from "pg"
 import { dbQuery, executeTransaction } from "../db"
-import { TableNames } from '../db/constants'
+import { TableNames } from "../db/constants"
 
 abstract class Base<T extends QueryResultRow> {
   public table: TableNames
 
-  public async create(columns: string[], values: string[]) {
+  public async create(columns: string[], values: any[]) {
     const transactionText = `INSERT INTO ${
       this.table
     }(${columns.join()}) VALUES(${values
@@ -43,9 +43,9 @@ abstract class Base<T extends QueryResultRow> {
 
     const queryText = `UPDATE ${this.table} SET ${setClause} WHERE id = $${values.length} RETURNING *`
 
-    const queryResult = await dbQuery<T>(queryText, values)
+    const queryResult = await executeTransaction<T>(queryText, values)
 
-    return queryResult.rows[0]
+    return queryResult
   }
 }
 

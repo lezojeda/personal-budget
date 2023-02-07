@@ -17,7 +17,7 @@ import PGSimple from "connect-pg-simple"
 import { serve, setup } from 'swagger-ui-express'
 import { errorHandler, isAuthenticated } from "./src/middlewares"
 
-import { authRouter, envelopesRouter, usersRouter } from "./src/routes"
+import { authRouter, envelopesRouter, transactionsRouter, usersRouter } from "./src/routes"
 
 import docs from './docs/docs.json'
 
@@ -58,6 +58,7 @@ app.use("*", isAuthenticated)
 app.use("/auth", authRouter)
 app.use("/envelopes", envelopesRouter)
 app.use("/users", usersRouter)
+app.use("/transactions", transactionsRouter)
 
 app.use(errorHandler)
 

@@ -16,7 +16,10 @@ class User extends Base<IUser> implements IUser {
     const queryText = `SELECT * FROM ${this.table} WHERE username = $1`
     const queryResult = await dbQuery<User>(queryText, [username])
 
-    return queryResult.rows[0]
+    if (queryResult.rowCount > 0) {
+      return queryResult.rows[0]
+    }
+    return null
   }
 }
 

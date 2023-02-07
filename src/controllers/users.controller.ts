@@ -7,12 +7,14 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     const requestingUserId = req.session.passport?.user
     const bodyData = matchedData(req, { locations: ["body"] })
     if (requestingUserId) {
-      const updatedUser = await new User().updateById(
+      const queryResult = await new User().updateById(
         requestingUserId.toString(),
         bodyData
       )
-      delete updatedUser.hash
-      res.json(updatedUser)
+
+      const user  = queryResult.rows[0]
+      delete user.hash
+      res.json(user)
     }
   } catch (error) {
     next(error)

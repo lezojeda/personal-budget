@@ -3,6 +3,7 @@ import { body, query } from "express-validator"
 import { MESSAGES } from "../constants/messages"
 import {
   createEnvelope,
+  createEnvelopeTransaction,
   deleteEnvelopeById,
   getEnvelopeById,
   getEnvelopes,
@@ -63,6 +64,14 @@ envelopesRouter.patch(
   handleValidationResult,
   validateRequestBody,
   updateEnvelopeById
+)
+
+envelopesRouter.post(
+  "/:id/transactions",
+  body("amount", MESSAGES.ENVELOPES.AMOUNT_REQUIRED)
+    .trim()
+    .isFloat({ min: 0 }),
+  createEnvelopeTransaction
 )
 
 export { envelopesRouter }

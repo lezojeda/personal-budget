@@ -32,6 +32,8 @@ const checkEnvelopeExistsAndIsAccessible = async (
   if (!isEnvelopeFromRequestingUser(envelope.user_id, requestingUserId)) {
     return new ForbidenError(id)
   }
+
+  return envelope
 }
 
 export { checkEnvelopeExistsAndIsAccessible }
