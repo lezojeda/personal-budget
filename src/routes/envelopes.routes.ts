@@ -68,7 +68,7 @@ envelopesRouter.patch(
 
 envelopesRouter.post(
   "/:id/transactions",
-  body("amount", MESSAGES.ENVELOPES.AMOUNT_REQUIRED)
+  body("amount", MESSAGES.AMOUNT_REQUIRED)
     .trim()
     .isFloat({ min: 0 }),
   createEnvelopeTransaction

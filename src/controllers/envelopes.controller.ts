@@ -13,14 +13,11 @@ const getEnvelopes = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.session.passport?.user
-    if (userId) {
-      const queryResult = await new Envelope().getAllFromUser(userId.toString())
+    const queryResult = await new Envelope().getAllFromUser(
+      req.user?.id.toString()
+    )
 
-      return res.json(queryResult.rows)
-    }
-
-    throw new UnauthorizedError()
+    return res.json(queryResult.rows)
   } catch (error) {
     next(error)
   }
@@ -36,27 +33,21 @@ const createEnvelope = async (
       return next([{ message: "Include a body in the request" }])
     }
 
-    const userId = req.session.passport?.user
+    const { current_amount, envelope_limit, name } = req.body
 
-    if (userId) {
-      const { current_amount, envelope_limit, name } = req.body
+    const queryResult = await new Envelope().createEnvelope({
+      current_amount,
+      envelope_limit,
+      name,
+      userId: req.user?.id,
+    })
 
-      const queryResult = await new Envelope().createEnvelope({
-        current_amount,
-        envelope_limit,
-        name,
-        userId,
-      })
-
-      return res.status(201).json({
-        message: "Envelope created successfully",
-        envelope: {
-          ...queryResult.rows[0],
-        },
-      })
-    }
-
-    throw new UnauthorizedError()
+    return res.status(201).json({
+      message: "Envelope created successfully",
+      envelope: {
+        ...queryResult.rows[0],
+      },
+    })
   } catch (error) {
     next(error)
   }
@@ -112,23 +103,18 @@ const deleteEnvelopeById = async (
   try {
     const { id } = req.params
 
-    const userId = req.session.passport?.user
+    const envelopeCheckResult = checkEnvelopeExistsAndIsAccessible(
+      id,
+      req.user?.id
+    )
 
-    if (userId) {
-      const envelopeCheckResult = checkEnvelopeExistsAndIsAccessible(
-        id,
-        req.session.passport?.user
-      )
-
-      if (!envelopeCheckResult) {
-        await new Envelope().deleteById(req.params.id)
-      } else {
-        next(envelopeCheckResult)
-      }
-
-      res.status(StatusCodes.NO_CONTENT).send()
+    if (!envelopeCheckResult) {
+      await new Envelope().deleteById(req.params.id)
+    } else {
+      next(envelopeCheckResult)
     }
-    throw new UnauthorizedError()
+
+    res.status(StatusCodes.NO_CONTENT).send()
   } catch (error) {
     next(error)
   }
@@ -141,21 +127,16 @@ const getEnvelopeById = async (
 ) => {
   const { id } = req.params
 
-  const userId = req.session.passport?.user
+  const envelopeCheckResult = await checkEnvelopeExistsAndIsAccessible(
+    id,
+    req.user?.id
+  )
 
-  if (userId) {
-    const envelopeCheckResult = await checkEnvelopeExistsAndIsAccessible(
-      id,
-      req.session.passport?.user
-    )
-
-    if (envelopeCheckResult instanceof AppError) {
-      next(envelopeCheckResult)
-    } else {
-      res.json(envelopeCheckResult)
-    }
+  if (envelopeCheckResult instanceof AppError) {
+    next(envelopeCheckResult)
+  } else {
+    res.json(envelopeCheckResult)
   }
-  throw new UnauthorizedError()
 }
 
 const updateEnvelopeById = async (
@@ -166,6 +147,10 @@ const updateEnvelopeById = async (
   try {
     const { id } = req.params
 
+    const bodyData = matchedData(req, { locations: ["body"] })
+    if (Object.keys(bodyData).length === 0) {
+      return next([{ message: "Include a valid body in the request" }])
+    }
     const envelopeCheckResult = await checkEnvelopeExistsAndIsAccessible(
       id,
       req.session.passport?.user
@@ -174,10 +159,6 @@ const updateEnvelopeById = async (
     if (envelopeCheckResult instanceof AppError) {
       next(envelopeCheckResult)
     } else {
-      const bodyData = matchedData(req, { locations: ["body"] })
-      if (Object.keys(bodyData).length === 0) {
-        return next([{ message: "Include a valid body in the request" }])
-      }
       const updatedEnvelope = await new Envelope().updateById(id, bodyData)
       res.json(updatedEnvelope)
     }
@@ -192,10 +173,8 @@ const createEnvelopeTransaction = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.session.passport?.user
-
-    if (userId) {
       const { id } = req.params
+      const userId = req.user?.id
       const envelopeCheckResult = await checkEnvelopeExistsAndIsAccessible(
         id,
         userId
@@ -208,7 +187,7 @@ const createEnvelopeTransaction = async (
         const amount = bodyData["amount"]
 
         const updateEnvelopeQueryResult =
-          await new Envelope().updateEnvelopeAmount(id, amount)
+          await new Envelope().updateEnvelopeAmount(id, -amount)
 
         if (updateEnvelopeQueryResult.rowCount > 0) {
           const timestamp = new Date().toISOString().substring(0, 19)
@@ -221,9 +200,6 @@ const createEnvelopeTransaction = async (
           res.json(queryResult.rows[0])
         }
       }
-    } else {
-      throw new UnauthorizedError()
-    }
   } catch (error) {
     next(error)
   }

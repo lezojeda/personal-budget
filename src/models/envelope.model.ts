@@ -16,7 +16,7 @@ class Envelope extends Base<IEnvelope> implements IEnvelope {
     current_amount: number
     envelope_limit: number
     name: string
-    userId: number
+    userId?: number
   }) {
     const queryResult = await this.create(
       ["current_amount", "envelope_limit", "name", "user_id"],
@@ -27,10 +27,26 @@ class Envelope extends Base<IEnvelope> implements IEnvelope {
   }
 
   public async updateEnvelopeAmount(id: string, amount: number) {
-    const queryText = `UPDATE ${this.table} SET current_amount = current_amount - cast($1 as money) WHERE id = $2 RETURNING *`
+    const queryText = `UPDATE ${this.table} SET current_amount = current_amount + cast($1 as money) WHERE id = $2 RETURNING *`
 
     const queryResult = await executeTransaction<Envelope>(queryText, [
       amount,
+      id,
+    ])
+
+    return queryResult
+  }
+
+  public async updateEnvelopeAmountAfterTransactionUpdate(
+    id: string,
+    prevTransactionAmount: number,
+    newTransactionAmount: number
+  ) {
+    const queryText = `UPDATE ${this.table} SET current_amount = current_amount + cast($1 as money) - cast($2 as money) WHERE id = $3 RETURNING *`
+
+    const queryResult = await executeTransaction<Envelope>(queryText, [
+      prevTransactionAmount,
+      newTransactionAmount,
       id,
     ])
 

@@ -16,7 +16,7 @@ class Transaction extends Base<ITransaction> implements ITransaction {
     amount: number
     envelope_id: string
     timestamp: string
-    user_id: number
+    user_id?: number
   }) {
     const queryResult = await this.create(
       ["amount", "envelope_id", "timestamp", "user_id"],
@@ -26,7 +26,7 @@ class Transaction extends Base<ITransaction> implements ITransaction {
     return queryResult
   }
 
-  public async getAllTransactionsFromUser(userId: string) {
+  public async getAllTransactionsFromUser(userId?: string) {
     const queryText = `
       SELECT id, amount, timestamp, envelope_id FROM ${this.table}
       WHERE user_id = $1`

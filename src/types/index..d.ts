@@ -5,6 +5,5 @@ declare module 'express-session' {
     passport: {
         user: number;
     }
-    userId: string
   }
 }

@@ -1,6 +1,7 @@
 import { EnvelopeNotFoundError } from "../classes/EnvelopeNotFoundError"
 import { ForbidenError } from "../classes/ForbidenError"
 import { Envelope } from "../models/Envelope.model"
+import { isEntityFromRequestingUser } from './utils'
 
 const getEnvelopeFromDb = async (id: string) => {
   const queryResult = await new Envelope().getById(id)
@@ -10,13 +11,6 @@ const getEnvelopeFromDb = async (id: string) => {
   }
 
   return null
-}
-
-const isEnvelopeFromRequestingUser = (
-  envelopeOwnerUserId: number,
-  requestingUserId?: number
-) => {
-  return requestingUserId === envelopeOwnerUserId
 }
 
 const checkEnvelopeExistsAndIsAccessible = async (
@@ -29,7 +23,7 @@ const checkEnvelopeExistsAndIsAccessible = async (
     return new EnvelopeNotFoundError(id)
   }
 
-  if (!isEnvelopeFromRequestingUser(envelope.user_id, requestingUserId)) {
+  if (!isEntityFromRequestingUser(envelope.user_id, requestingUserId)) {
     return new ForbidenError(id)
   }
 

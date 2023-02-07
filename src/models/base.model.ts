@@ -21,7 +21,7 @@ abstract class Base<T extends QueryResultRow> {
     return await executeTransaction<T>(transactionText, [id])
   }
 
-  public async getAllFromUser(userId: string) {
+  public async getAllFromUser(userId?: string) {
     const queryText = `SELECT * FROM ${this.table} WHERE user_id = $1`
     return await dbQuery<T>(queryText, [userId])
   }
