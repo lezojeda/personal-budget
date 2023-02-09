@@ -26,14 +26,7 @@ const getTransactionById = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params
-    const queryResult = await new Transaction().getById(id)
-    const transaction = queryResult.rows[0]
-    if (req.user?.id !== transaction.user_id) {
-      throw new ForbidenError(id)
-    }
-
-    return res.json(transaction)
+    return res.json(req.transaction)
   } catch (error) {
     next(error)
   }
