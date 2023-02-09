@@ -18,6 +18,9 @@ transactionsRouter.use(
   checkTransactionAccess
 )
 
+/**
+ * TODO: Add optional query param to filter by envelope
+ */
 transactionsRouter.get("/", getTransactions)
 
 transactionsRouter.get("/:id", getTransactionById)

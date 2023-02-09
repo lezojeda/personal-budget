@@ -24,6 +24,10 @@
       "description": "Envelope related operations"
     },
     {
+      "name": "transactions",
+      "description": "Transaction related operations"
+    },
+    {
       "name": "auth",
       "description": "Authentication related operations"
     },
@@ -96,9 +100,7 @@
                 "type": "object",
                 "properties": {
                   "current_amount": {
-                    "type": "number",
-                    "format": "float",
-                    "example": "532.6"
+                    "$ref": "#/components/schemas/Amount"
                   },
                   "envelope_limit": {
                     "type": "number",
@@ -249,7 +251,7 @@
       },
       "delete": {
         "tags": ["envelopes"],
-        "summary": "Delete the envelope",
+        "summary": "Delete the envelope and all its associated transactions",
         "parameters": [
           {
             "in": "path",
@@ -263,6 +265,66 @@
         "responses": {
           "204": {
             "description": "The envelope was deleted succesfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Forbbiden"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/500InternalServerError"
+          }
+        }
+      }
+    },
+    "/envelopes/{envelopeId}/transactions": {
+      "post": {
+        "tags": ["envelopes"],
+        "summary": "Creates a transaction associated to an envelope",
+        "description": "The amount used in the request body will be subtracted from the current_amount property of the envelope and a new transaction will be recorded in the transactions table.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "envelopeId",
+            "schema": {
+              "$ref": "#/components/parameters/envelopeId"
+            }
+          }
+        ],
+        "operationId": "createEnvelopeTransaction",
+        "requestBody": {
+          "description": "Must contain the amount to subtract from the envelope and assign to the new transaction",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "format": "float",
+                    "example": "100"
+                  }
+                },
+                "required": ["amount"]
+              }
+            }
+          },
+          "required": "true"
+        },
+        "responses": {
+          "201": {
+            "description": "The transaction created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
           },
           "401": {
             "$ref": "#/components/responses/401Unauthorized"
@@ -357,6 +419,174 @@
           },
           "401": {
             "$ref": "#/components/responses/401Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/500InternalServerError"
+          }
+        }
+      }
+    },
+    "/transactions": {
+      "get": {
+        "tags": ["transactions"],
+        "summary": "Gets all the transactions from the signed in user",
+        "operationId": "getTransactions",
+        "responses": {
+          "200": {
+            "description": "All transactions belonging to the user signed in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "amount": "$20.00",
+                    "timestamp": "2023-02-09T23:15:38.000Z",
+                    "envelope_id": 2
+                },
+                {
+                    "id": 2,
+                    "amount": "$20.00",
+                    "timestamp": "2023-02-09T23:15:39.000Z",
+                    "envelope_id": 2
+                }
+                ]
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/500InternalServerError"
+          }
+        }
+      }
+    },
+    "/transactions/{transactionId}": {
+      "get": {
+        "tags": ["transactions"],
+        "summary": "Gets the transaction requested by id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "envelopeId",
+            "schema": {
+              "$ref": "#/components/parameters/envelopeId"
+            }
+          }
+        ],
+        "operationId": "getTransactionById",
+        "responses": {
+          "200": {
+            "description": "The transaction requested",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Forbbiden"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/500InternalServerError"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["transactions"],
+        "summary": "Updates the transaction",
+        "description": "Note that the only thing that can be changed in a transaction at this time is the amount.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "transactionId",
+            "schema": {
+              "$ref": "#/components/parameters/transactionId"
+            }
+          }
+        ],
+        "operationId": "updateTransactionById",
+        "requestBody": {
+          "description": "The amount to update the transaction with",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "$ref": "#/components/schemas/Amount"
+                  }
+                }
+              }
+            }
+          },
+          "required": "true"
+        },
+        "responses": {
+          "200": {
+            "description": "The transaction with its updated amount",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Forbbiden"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/500InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["transactions"],
+        "summary": "Delete the transaction",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "transactionId",
+            "schema": {
+              "$ref": "#/components/parameters/transactionId"
+            }
+          }
+        ],
+        "operationId": "deleteTransactionById",
+        "responses": {
+          "204": {
+            "description": "The envelope was deleted succesfully"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/403Forbbiden"
+          },
+          "404": {
+            "$ref": "#/components/responses/404NotFound"
           },
           "500": {
             "$ref": "#/components/responses/500InternalServerError"
@@ -586,15 +816,20 @@
         "in": "path",
         "name": "envelopeId",
         "schema": {
-          "type": "integer",
-          "required": "true",
-          "description": "Numeric ID of the envelope"
+          "$ref": "#/components/schemas/EntityId"
+        }
+      },
+      "transactionId": {
+        "in": "path",
+        "name": "envelopeId",
+        "schema": {
+          "$ref": "#/components/schemas/EntityId"
         }
       }
     },
     "responses": {
       "400BadRequest": {
-        "description": "Request body invalid. Using a string for a parameter that accepts a number for example or a property is missing",
+      "description": "Request body invalid. Using a string for a parameter that accepts a number for example or a property is missing",
         "content": {
           "application/json": {
             "schema": {
@@ -731,7 +966,43 @@
             "format": "int32",
             "example": "1"
           }
-        }
+        },
+        "example": {
+          "id": 1,
+          "current_amount": "$440.00",
+          "envelope_limit": "$600.00",
+          "name": "Groceries",
+          "user_id": 1
+      }
+      },
+      "Transaction": {
+        "required": ["id", "amount", "envelope_id", "user_id", "timestamp"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/EntityId"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/Amount"
+          },
+          "envelope_id": {
+            "$ref": "#/components/schemas/EntityId"
+          },
+          "user_id": {
+            "$ref": "#/components/schemas/EntityId"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "datetime",
+            "example": "2023-02-09T23:15:38.000Z"
+          }
+        },
+        "example": {
+          "id": 1,
+          "amount": "$27.00",
+          "timestamp": "2023-02-09T13:15:38.000Z",
+          "envelope_id": 2
+      }
       },
       "ErrorResponse": {
         "type": "object",
@@ -743,6 +1014,16 @@
             }
           }
         }
+      },
+      "EntityId": {
+        "type": "integer",
+        "format": "int32",
+        "example": "1"
+      },
+      "Amount": {
+        "type": "number",
+        "format": "float",
+        "example": "532.6"
       },
       "Message": {
         "type": "object",

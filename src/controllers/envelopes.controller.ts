@@ -161,7 +161,7 @@ const createEnvelopeTransaction = async (
         timestamp,
         user_id: userId,
       })
-      res.json(queryResult.rows[0])
+      res.status(201).json(queryResult.rows[0])
     }
   } catch (error) {
     next(error)
