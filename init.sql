@@ -12,8 +12,9 @@ CREATE TABLE "envelopes" (
   "envelope_limit" money,
   "name" varchar(50) NOT NULL,
   "user_id" int NOT NULL,
-  CONSTRAINT positive_current_amount CHECK ("current_amount" > '0.00'::money),
-  CONSTRAINT positive_envelope_limit CHECK ("envelope_limit" > '0.00'::money)
+  CONSTRAINT positive_current_amount CHECK ("current_amount" > '0.00' :: money),
+  CONSTRAINT positive_envelope_limit CHECK ("envelope_limit" > '0.00' :: money),
+  FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE
 );
 
 CREATE TABLE "transactions" (
@@ -21,7 +22,9 @@ CREATE TABLE "transactions" (
   "amount" money NOT NULL,
   "envelope_id" int NOT NULL,
   "user_id" int NOT NULL,
-  "timestamp" timestamp without time zone NOT NULL
+  "timestamp" timestamp without time zone NOT NULL,
+  FOREIGN KEY ("envelope_id") REFERENCES "envelopes" ("id") ON DELETE CASCADE,
+  FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE
 );
 
 -- Manage users sessions
@@ -29,15 +32,11 @@ CREATE TABLE "session" (
   "sid" varchar NOT NULL COLLATE "default",
   "sess" json NOT NULL,
   "expire" timestamp(6) NOT NULL
-)
-WITH (OIDS=FALSE);
+) WITH (OIDS = FALSE);
 
-ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE
+  "session"
+ADD
+  CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
-
-ALTER TABLE "envelopes" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
-
-ALTER TABLE "transactions" ADD FOREIGN KEY ("envelope_id") REFERENCES "envelopes" ("id");
-
-ALTER TABLE "transactions" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
