@@ -1,7 +1,7 @@
-import { EnvelopeNotFoundError } from "../classes/EnvelopeNotFoundError"
+import { EntityNotFoundError } from "../classes/EntityNotFound"
 import { ForbidenError } from "../classes/ForbidenError"
 import { Envelope } from "../models/Envelope.model"
-import { isEntityFromRequestingUser } from './utils'
+import { isEntityFromRequestingUser } from "./utils"
 
 const getEnvelopeFromDb = async (id: string) => {
   const queryResult = await new Envelope().getById(id)
@@ -20,7 +20,7 @@ const checkEnvelopeExistsAndIsAccessible = async (
   const envelope = await getEnvelopeFromDb(id)
 
   if (envelope === null) {
-    return new EnvelopeNotFoundError(id)
+    return new EntityNotFoundError("envelope", id)
   }
 
   if (!isEntityFromRequestingUser(envelope.user_id, requestingUserId)) {

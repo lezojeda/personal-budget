@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express"
 import { matchedData } from "express-validator/src/matched-data"
 import { StatusCodes } from "http-status-codes"
 import { AppError } from "../classes/AppError"
-import { UnauthorizedError } from "../classes/UnauthorizedError"
 import { Envelope } from "../models/Envelope.model"
 import { Transaction } from "../models/Transaction.model"
 import { checkEnvelopeExistsAndIsAccessible } from "../utils/envelopes.utils"
@@ -61,17 +60,21 @@ const transferBudgets = async (
   try {
     const errors: AppError[] = []
 
+    const envelopeIds = Object.values(req.query) as string[]
     await Promise.all(
-      Object.keys(req.query).map(async (key) => {
-        const envelopeId = req.query[key]
-        if (envelopeId && typeof envelopeId === "string") {
-          const envelopeCheck = await checkEnvelopeExistsAndIsAccessible(
-            envelopeId,
-            req.session.passport?.user
-          )
+      envelopeIds.map(async (id) => {
+        if (id) {
+          try {
+            const envelopeCheck = await checkEnvelopeExistsAndIsAccessible(
+              id,
+              req.session.passport?.user
+            )
 
-          if (envelopeCheck instanceof AppError) {
-            errors.push(envelopeCheck)
+            if (envelopeCheck instanceof AppError) {
+              throw envelopeCheck
+            }
+          } catch (error) {
+            errors.push(error as AppError)
           }
         }
       })
@@ -101,18 +104,7 @@ const deleteEnvelopeById = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params
-
-    const envelopeCheckResult = checkEnvelopeExistsAndIsAccessible(
-      id,
-      req.user?.id
-    )
-
-    if (!envelopeCheckResult) {
-      await new Envelope().deleteById(req.params.id)
-    } else {
-      next(envelopeCheckResult)
-    }
+    await new Envelope().deleteById(req.params.id)
 
     res.status(StatusCodes.NO_CONTENT).send()
   } catch (error) {
@@ -120,23 +112,8 @@ const deleteEnvelopeById = async (
   }
 }
 
-const getEnvelopeById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { id } = req.params
-
-  const envelopeCheckResult = await checkEnvelopeExistsAndIsAccessible(
-    id,
-    req.user?.id
-  )
-
-  if (envelopeCheckResult instanceof AppError) {
-    next(envelopeCheckResult)
-  } else {
-    res.json(envelopeCheckResult)
-  }
+const getEnvelopeById = async (req: Request, res: Response) => {
+  res.json(req.envelope)
 }
 
 const updateEnvelopeById = async (
@@ -151,17 +128,10 @@ const updateEnvelopeById = async (
     if (Object.keys(bodyData).length === 0) {
       return next([{ message: "Include a valid body in the request" }])
     }
-    const envelopeCheckResult = await checkEnvelopeExistsAndIsAccessible(
-      id,
-      req.session.passport?.user
-    )
 
-    if (envelopeCheckResult instanceof AppError) {
-      next(envelopeCheckResult)
-    } else {
-      const updatedEnvelope = await new Envelope().updateById(id, bodyData)
-      res.json(updatedEnvelope)
-    }
+    const updatedEnvelope = await new Envelope().updateById(id, bodyData)
+
+    res.json(updatedEnvelope)
   } catch (error) {
     next(error)
   }
@@ -173,33 +143,26 @@ const createEnvelopeTransaction = async (
   next: NextFunction
 ) => {
   try {
-      const { id } = req.params
-      const userId = req.user?.id
-      const envelopeCheckResult = await checkEnvelopeExistsAndIsAccessible(
-        id,
-        userId
-      )
+    const { id } = req.params
+    const userId = req.user?.id
+    const bodyData = matchedData(req, { locations: ["body"] })
+    const amount = bodyData["amount"]
 
-      if (envelopeCheckResult instanceof AppError) {
-        next(envelopeCheckResult)
-      } else {
-        const bodyData = matchedData(req, { locations: ["body"] })
-        const amount = bodyData["amount"]
+    const updateEnvelopeQueryResult = await new Envelope().updateEnvelopeAmount(
+      id,
+      -amount
+    )
 
-        const updateEnvelopeQueryResult =
-          await new Envelope().updateEnvelopeAmount(id, -amount)
-
-        if (updateEnvelopeQueryResult.rowCount > 0) {
-          const timestamp = new Date().toISOString().substring(0, 19)
-          const queryResult = await new Transaction().createTransaction({
-            amount,
-            envelope_id: id,
-            timestamp,
-            user_id: userId,
-          })
-          res.json(queryResult.rows[0])
-        }
-      }
+    if (updateEnvelopeQueryResult.rowCount > 0) {
+      const timestamp = new Date().toISOString().substring(0, 19)
+      const queryResult = await new Transaction().createTransaction({
+        amount,
+        envelope_id: id,
+        timestamp,
+        user_id: userId,
+      })
+      res.json(queryResult.rows[0])
+    }
   } catch (error) {
     next(error)
   }

@@ -11,6 +11,7 @@ import {
   updateEnvelopeById,
 } from "../controllers"
 import { handleValidationResult, validateRequestBody } from "../middlewares"
+import { checkEnvelopeAccess } from "../middlewares/checkEnvelopeAccess.middleware"
 
 const envelopesRouter = express.Router()
 
@@ -45,12 +46,13 @@ envelopesRouter.post(
   transferBudgets
 )
 
-envelopesRouter.delete("/:id", deleteEnvelopeById)
+envelopesRouter.delete("/:id", checkEnvelopeAccess, deleteEnvelopeById)
 
-envelopesRouter.get("/:id", getEnvelopeById)
+envelopesRouter.get("/:id", checkEnvelopeAccess, getEnvelopeById)
 
 envelopesRouter.patch(
   "/:id",
+  checkEnvelopeAccess,
   body("name", MESSAGES.ENVELOPES.NAME_TYPE)
     .trim()
     .isString()
@@ -68,9 +70,8 @@ envelopesRouter.patch(
 
 envelopesRouter.post(
   "/:id/transactions",
-  body("amount", MESSAGES.AMOUNT_REQUIRED)
-    .trim()
-    .isFloat({ min: 0 }),
+  checkEnvelopeAccess,
+  body("amount", MESSAGES.AMOUNT_REQUIRED).trim().isFloat({ min: 0 }),
   createEnvelopeTransaction
 )
 

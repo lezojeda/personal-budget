@@ -1,4 +1,5 @@
 import { Envelope } from "../models/Envelope.model"
+import { ITransaction } from './Transaction.interface'
 
 export {}
 
@@ -10,6 +11,7 @@ declare global {
 
     interface Request {
       envelope: IEnvelope
+      transaction: ITransaction
     }
   }
 }
