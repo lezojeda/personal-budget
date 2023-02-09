@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import { matchedData } from "express-validator"
+import { StatusCodes } from 'http-status-codes'
 import { ForbidenError } from "../classes/ForbidenError"
 import { Envelope } from "../models/Envelope.model"
 import { Transaction } from "../models/Transaction.model"
@@ -61,11 +62,19 @@ const updateTransactionById = async (
   }
 }
 
-const deleteTransactionById = (
+const deleteTransactionById = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {}
+) => {
+  try {
+    await new Transaction().deleteById(req.params.id)
+
+    res.status(StatusCodes.NO_CONTENT).send()
+  } catch (error) {
+    next(error)
+  }
+}
 
 export {
   getTransactions,
