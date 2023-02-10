@@ -1,13 +1,24 @@
 import { Pool, QueryResultRow } from "pg"
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL })
-
-const dbQuery = async <T extends QueryResultRow>(queryText: string, values?: any[]) => {
-  return pool.query<T>(queryText, values)
+let dbPool: Pool
+const getDbPool = () => {
+  if (dbPool) return dbPool
+  dbPool = new Pool({ connectionString: process.env.DATABASE_URL })
+  return dbPool
 }
 
-const executeTransaction = async <T extends QueryResultRow>(text: string, values: any[]) => {
-  const client = await pool.connect()
+const dbQuery = async <T extends QueryResultRow>(
+  queryText: string,
+  values?: any[]
+) => {
+  return getDbPool().query<T>(queryText, values)
+}
+
+const executeTransaction = async <T extends QueryResultRow>(
+  text: string,
+  values: any[]
+) => {
+  const client = await getDbPool().connect()
   try {
     await client.query("BEGIN")
 
@@ -23,4 +34,4 @@ const executeTransaction = async <T extends QueryResultRow>(text: string, values
   }
 }
 
-export { dbQuery, executeTransaction }
+export { dbQuery, executeTransaction, getDbPool as getPool }

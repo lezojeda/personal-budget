@@ -1,7 +1,6 @@
 import { Strategy } from "passport-local"
-import { comparePasswords } from '../utils/auth.utils'
-import { dbQuery } from '../db'
-import { User } from '../models/User.model'
+import { comparePasswords } from "../utils/auth.utils"
+import { User } from "../models/User.model"
 
 const deserializeUserCallback = async (
   id: string,
