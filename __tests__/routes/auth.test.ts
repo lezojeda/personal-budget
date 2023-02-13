@@ -1,7 +1,7 @@
 import { Server } from "http"
 import supertest from "supertest"
 import createApp from "../../createApp"
-import { getPool } from '../../src/db'
+import { getPool } from "../../src/db"
 
 const route = "/auth"
 
@@ -10,7 +10,7 @@ describe("POST", () => {
   let server: Server
 
   beforeAll(() => {
-    server = app.listen(3000)
+    server = app.listen()
   })
 
   afterAll(() => {

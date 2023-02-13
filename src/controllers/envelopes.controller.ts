@@ -129,8 +129,9 @@ const updateEnvelopeById = async (
       return next([{ message: "Include a valid body in the request" }])
     }
 
-    const updatedEnvelope = await new Envelope().updateById(id, bodyData)
+    const queryResult = await new Envelope().updateById(id, bodyData)
 
+    const updatedEnvelope = queryResult.rows[0]
     res.json(updatedEnvelope)
   } catch (error) {
     next(error)
