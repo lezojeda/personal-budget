@@ -9,6 +9,11 @@ describe("POST", () => {
   let app = createApp()
   let server: Server
 
+  const user = {
+    username: "authTestUser",
+    password: "password",
+  }
+
   beforeAll(() => {
     server = app.listen()
   })
@@ -19,25 +24,15 @@ describe("POST", () => {
   })
 
   it("should let user sign up", async () => {
-    const newUser = {
-      username: "authTestUser",
-      password: "password",
-    }
-
-    const response = await supertest(app).post(`${route}/signup`).send(newUser)
+    const response = await supertest(app).post(`${route}/signup`).send(user)
 
     expect(response.statusCode).toEqual(201)
   })
 
   it("should let user sign in", async () => {
-    const newUser = {
-      username: "authTestUser2",
-      password: "password",
-    }
-
-    await supertest(app).post(`${route}/signup`).send(newUser)
-
-    const response = await supertest(app).post(`${route}/signin`).send(newUser)
+    const response = await supertest(app)
+      .post(`${route}/signin`)
+      .send({ username: user.username, password: user.password  })
 
     expect(response.statusCode).toEqual(200)
   })
