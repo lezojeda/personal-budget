@@ -27,15 +27,13 @@ describe("Envelopes", () => {
 
   describe("User trying to access their own envelopes", () => {
     beforeAll(async () => {
-      const response = await supertest(app)
+      const signInResponse = await supertest(app)
         .post("/auth/signin")
         .send({ username: "test", password: "password" })
-      cookie = response.headers["set-cookie"]
+      cookie = signInResponse.headers["set-cookie"]
     })
 
     afterAll(async () => {
-      /** Create another envelope to user in not-owned envelope tests */
-      await supertest(app).post(route).set("Cookie", cookie).send(testEnvelope)
       await supertest(app).post("/auth/signout")
     })
 
@@ -117,7 +115,7 @@ describe("Envelopes", () => {
     describe("GET", () => {
       it("should return 204 deleting an envelope", async () => {
         const response = await supertest(app)
-          .delete(`${route}/1`)
+          .delete(`${route}/11`)
           .set("Cookie", cookie)
 
         expect(response.statusCode).toEqual(204)
@@ -148,7 +146,7 @@ describe("Envelopes", () => {
 
     it("should return 403 trying to get an evelope", async () => {
       const response = await supertest(app)
-        .get(`${route}/2`)
+        .get(`${route}/1`)
         .set("Cookie", user2Cookie)
 
       expect(response.statusCode).toEqual(403)
@@ -157,7 +155,7 @@ describe("Envelopes", () => {
     it("should return 403 trying to update an evelope", async () => {
       const newName = "groceries"
       const response = await supertest(app)
-        .patch(`${route}/2`)
+        .patch(`${route}/1`)
         .set("Cookie", user2Cookie)
         .send({ name: newName })
 
@@ -167,7 +165,7 @@ describe("Envelopes", () => {
     it("should return 403 trying to delete an evelope", async () => {
       const newName = "groceries"
       const response = await supertest(app)
-        .delete(`${route}/2`)
+        .delete(`${route}/1`)
         .set("Cookie", user2Cookie)
         .send({ name: newName })
 
