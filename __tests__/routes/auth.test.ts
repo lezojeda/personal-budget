@@ -20,7 +20,7 @@ describe("POST", () => {
 
   it("should let user sign up", async () => {
     const newUser = {
-      username: "test",
+      username: "authTestUser",
       password: "password",
     }
 
@@ -31,7 +31,7 @@ describe("POST", () => {
 
   it("should let user sign in", async () => {
     const newUser = {
-      username: "test2",
+      username: "authTestUser2",
       password: "password",
     }
 

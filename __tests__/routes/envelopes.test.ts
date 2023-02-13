@@ -2,7 +2,6 @@ import { Server } from "http"
 import supertest from "supertest"
 import createApp from "../../createApp"
 import { getPool } from "../../src/db"
-import { IUser } from "../../src/interfaces/User.interface"
 
 const route = "/envelopes"
 
@@ -27,19 +26,10 @@ describe("Envelopes", () => {
   })
 
   describe("User trying to access their own envelopes", () => {
-    let userCreatedId: string
     beforeAll(async () => {
-      const user = {
-        username: "test-envelope",
-        password: "password",
-      }
-
-      const signUpResponse = await supertest(app)
-        .post("/auth/signup")
-        .send(user)
-      userCreatedId = signUpResponse.body.user.id
-
-      const response = await supertest(app).post("/auth/signin").send(user)
+      const response = await supertest(app)
+        .post("/auth/signin")
+        .send({ username: "test", password: "password" })
       cookie = response.headers["set-cookie"]
     })
 
@@ -47,6 +37,31 @@ describe("Envelopes", () => {
       /** Create another envelope to user in not-owned envelope tests */
       await supertest(app).post(route).set("Cookie", cookie).send(testEnvelope)
       await supertest(app).post("/auth/signout")
+    })
+
+    describe("GET", () => {
+      it("should return 200 getting an envelope", async () => {
+        const response = await supertest(app)
+          .get(`${route}/1`)
+          .set("Cookie", cookie)
+
+        expect(response.statusCode).toEqual(200)
+      })
+
+      it("should return 200 getting user envelopes", async () => {
+        const response = await supertest(app).get(route).set("Cookie", cookie)
+
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.length).toEqual(10)
+      })
+
+      it("should return 404 getting an envelope that does not exist", async () => {
+        const response = await supertest(app)
+          .get(`${route}/1500`)
+          .set("Cookie", cookie)
+
+        expect(response.statusCode).toEqual(404)
+      })
     })
 
     it("should return 201 and the id after creating an envelope", async () => {
@@ -59,44 +74,31 @@ describe("Envelopes", () => {
       expect(response.body).toStrictEqual({
         message: "Envelope created successfully",
         envelope: {
-          id: 1,
+          id: 11,
         },
-      })
-    })
-
-    describe("GET", () => {
-      it("should return 200 getting an envelope", async () => {
-        const response = await supertest(app)
-          .get(`${route}/1`)
-          .set("Cookie", cookie)
-
-        expect(response.statusCode).toEqual(200)
-      })
-
-      it("should return 404 getting an envelope that does not exist", async () => {
-        const response = await supertest(app)
-          .get(`${route}/1500`)
-          .set("Cookie", cookie)
-
-        expect(response.statusCode).toEqual(404)
       })
     })
 
     describe("PATCH", () => {
       it("should return 200 and the updated envelope when updating", async () => {
         const newName = "groceries"
+        const newEnvelopeLimit = 2500
+
+        const envelopeToUpdate = await supertest(app)
+          .get(`${route}/1`)
+          .set("Cookie", cookie)
+
         const response = await supertest(app)
           .patch(`${route}/1`)
           .set("Cookie", cookie)
-          .send({ name: newName })
+          .send({ name: newName, envelope_limit: newEnvelopeLimit })
 
         const updatedEnvelope = {
-          ...testEnvelope,
-          id: 1,
-          current_amount: "$500.00",
-          envelope_limit: "$600.00",
+          id: envelopeToUpdate.body.id,
           name: newName,
-          user_id: userCreatedId,
+          current_amount: envelopeToUpdate.body.current_amount,
+          envelope_limit: "$2,500.00",
+          user_id: envelopeToUpdate.body.user_id,
         }
 
         expect(response.statusCode).toEqual(200)
@@ -134,13 +136,9 @@ describe("Envelopes", () => {
   describe("User trying to access not owned envelopes", () => {
     let user2Cookie: string
     beforeAll(async () => {
-      const user2 = {
-        username: "test-envelope2",
-        password: "password",
-      }
-
-      await supertest(app).post("/auth/signup").send(user2)
-      const response = await supertest(app).post("/auth/signin").send(user2)
+      const response = await supertest(app)
+        .post("/auth/signin")
+        .send({ username: "test2", password: "password" })
       user2Cookie = response.headers["set-cookie"]
     })
 
