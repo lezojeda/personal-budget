@@ -2,6 +2,8 @@ export const MESSAGES = {
   AUTH: {
     USERNAME_REQUIRED: "Username is required",
     PASSWORD_REQUIRED: "Password is required",
+    USERNAME_TAKEN: "Username already taken. Try another",
+    BAD_CREDENTIALS: "Bad credentials",
   },
   ENVELOPES: {
     CURRENT_AMOUNT_REQUIRED:
@@ -11,6 +13,10 @@ export const MESSAGES = {
     ENVELOPE_LIMIT_REQUIRED:
       "current_amount is required and must be a positive float number",
     ENVELOPE_LIMIT_TYPE: "envelope_limit must be a positive float number",
+    CREATION_SUCCESSFUL: "Envelope created successfully"
+  },
+  VALIDATION: {
+    INCLUDE_VALID_BODY: "Include a valid body in the request",
   },
   AMOUNT_REQUIRED:
     "current_amount is required and must be a positive float number",

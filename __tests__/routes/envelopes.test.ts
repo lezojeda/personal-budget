@@ -1,15 +1,15 @@
 import { Server } from "http"
 import supertest from "supertest"
 import createApp from "../../createApp"
+import { MESSAGES } from "../../src/constants/messages"
 import { getPool } from "../../src/db"
-
-const route = "/envelopes"
 
 describe("Envelopes", () => {
   let app = createApp()
   let server: Server
   let cookie: string
 
+  const route = "/envelopes"
   const testEnvelope = {
     current_amount: 500,
     envelope_limit: 600,
@@ -70,7 +70,7 @@ describe("Envelopes", () => {
 
       expect(response.statusCode).toEqual(201)
       expect(response.body).toStrictEqual({
-        message: "Envelope created successfully",
+        message: MESSAGES.ENVELOPES.CREATION_SUCCESSFUL,
         envelope: {
           id: 11,
         },

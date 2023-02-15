@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express"
+import { MESSAGES } from "../constants/messages"
 
 const validateRequestBody = (
   req: Request,
@@ -6,7 +7,7 @@ const validateRequestBody = (
   next: NextFunction
 ) => {
   if (Object.keys(req.body).length === 0) {
-    return next([{ message: "Include a body in the request" }])
+    return next([{ message: MESSAGES.VALIDATION.INCLUDE_VALID_BODY }])
   }
   next()
 }

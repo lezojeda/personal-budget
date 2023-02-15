@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express"
-import { StatusCodes } from 'http-status-codes'
-import { AppError } from '../classes/AppError'
+import { StatusCodes } from "http-status-codes"
+import { AppError } from "../classes/AppError"
+import { MESSAGES } from "../constants/messages"
 
 const usersErrorHandler = (
   error: AppError | AppError[],
@@ -19,12 +20,13 @@ const usersErrorHandler = (
     if (isError23505 && isUsernameConstraintKey) {
       return next(
         new AppError({
-          message: "Username already taken. Try another.",
+          message: MESSAGES.AUTH.USERNAME_TAKEN,
           httpStatusCode: StatusCodes.CONFLICT,
         })
       )
     }
   }
+  next(error)
 }
 
 export { usersErrorHandler }

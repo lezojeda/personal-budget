@@ -17,5 +17,9 @@ export const handleValidationResult = (
       })
     )
   }
+
+  /**
+   * No errors found
+   */
   next()
 }
