@@ -47,8 +47,11 @@ const updateTransactionById = async (
       return next([{ message: MESSAGES.VALIDATION.INCLUDE_VALID_BODY }])
     }
 
-    const updatedTransaction = await new Transaction().updateById(id, bodyData)
+    const updatedTransactionResponse = await new Transaction().updateById(id, bodyData)
 
+    /**
+     * Update envelope with the new transaction's amount
+     */
     const transactionPrevAmount = transaction.amount
 
     await new Envelope().updateEnvelopeAmountAfterTransactionUpdate(
@@ -57,7 +60,7 @@ const updateTransactionById = async (
       bodyData["amount"]
     )
 
-    return res.json(updatedTransaction)
+    return res.json(updatedTransactionResponse.rows[0])
   } catch (error) {
     next(error)
   }

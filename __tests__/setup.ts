@@ -3,8 +3,10 @@ import { QueryResult } from "pg"
 import createApp from "../createApp"
 import { getPool } from "../src/db"
 import { IEnvelope } from "../src/interfaces/Envelope.interface"
+import { ITransaction } from "../src/interfaces/Transaction.interface"
 import { IUser } from "../src/interfaces/User.interface"
 import { Envelope } from "../src/models/Envelope.model"
+import { Transaction } from "../src/models/Transaction.model"
 import { User } from "../src/models/User.model"
 import { hashPassword } from "../src/utils/auth.utils"
 
@@ -16,6 +18,7 @@ module.exports = async function () {
 
   await createUsers()
   await createEnvelopes()
+  await createTransactions()
 
   server.close()
   getPool().end()
@@ -109,6 +112,79 @@ async function createEnvelopes() {
   let promises: Promise<QueryResult<IEnvelope>>[] = []
 
   envelopes.forEach((e) => promises.push(new Envelope().createEnvelope(e)))
+
+  await Promise.all(promises)
+}
+
+async function createTransactions() {
+  const transactions = [
+    {
+      amount: 10,
+      envelope_id: 1,
+      timestamp: "2023-02-15T13:27:45.000Z",
+      user_id: 1,
+    },
+    {
+      amount: 5,
+      envelope_id: 1,
+      timestamp: "2023-05-20T09:13:21.000Z",
+      user_id: 1,
+    },
+    {
+      amount: 8,
+      envelope_id: 1,
+      timestamp: "2023-07-09T20:42:16.000Z",
+      user_id: 1,
+    },
+    {
+      amount: 7,
+      envelope_id: 1,
+      timestamp: "2023-04-03T07:35:57.000Z",
+      user_id: 1,
+    },
+    {
+      amount: 3,
+      envelope_id: 1,
+      timestamp: "2023-08-29T16:02:34.000Z",
+      user_id: 1,
+    },
+    {
+      amount: 1,
+      envelope_id: 1,
+      timestamp: "2023-12-11T21:47:11.000Z",
+      user_id: 1,
+    },
+    {
+      amount: 6,
+      envelope_id: 1,
+      timestamp: "2023-10-02T04:58:02.000Z",
+      user_id: 1,
+    },
+    {
+      amount: 5,
+      envelope_id: 1,
+      timestamp: "2023-01-30T19:16:48.000Z",
+      user_id: 1,
+    },
+    {
+      amount: 4,
+      envelope_id: 1,
+      timestamp: "2023-06-05T11:08:27.000Z",
+      user_id: 1,
+    },
+    {
+      amount: 1,
+      envelope_id: 1,
+      timestamp: "2023-09-18T14:39:09.000Z",
+      user_id: 1,
+    },
+  ]
+
+  let promises: Promise<QueryResult<ITransaction>>[] = []
+
+  transactions.forEach((t) =>
+    promises.push(new Transaction().createTransaction(t))
+  )
 
   await Promise.all(promises)
 }

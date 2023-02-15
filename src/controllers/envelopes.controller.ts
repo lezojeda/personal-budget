@@ -155,7 +155,7 @@ const createEnvelopeTransaction = async (
       const timestamp = new Date().toISOString().substring(0, 19)
       const queryResult = await new Transaction().createTransaction({
         amount,
-        envelope_id: id,
+        envelope_id: Number(id),
         timestamp,
         user_id: userId,
       })
