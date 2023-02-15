@@ -38,42 +38,172 @@ describe("Envelopes", () => {
     })
 
     describe("GET", () => {
-      it("should return 200 getting an envelope", async () => {
-        const response = await supertest(app)
-          .get(`${route}/1`)
-          .set("Cookie", cookie)
+      describe("/envelopes", () => {
+        it("should return 200 getting user envelopes", async () => {
+          const response = await supertest(app).get(route).set("Cookie", cookie)
 
-        expect(response.statusCode).toEqual(200)
+          expect(response.statusCode).toEqual(200)
+          expect(response.body.length).toEqual(10)
+        })
       })
 
-      it("should return 200 getting user envelopes", async () => {
-        const response = await supertest(app).get(route).set("Cookie", cookie)
+      describe("/envelopes/:id", () => {
+        it("should return 200 getting an envelope", async () => {
+          const response = await supertest(app)
+            .get(`${route}/1`)
+            .set("Cookie", cookie)
 
-        expect(response.statusCode).toEqual(200)
-        expect(response.body.length).toEqual(10)
-      })
+          expect(response.statusCode).toEqual(200)
+        })
 
-      it("should return 404 getting an envelope that does not exist", async () => {
-        const response = await supertest(app)
-          .get(`${route}/1500`)
-          .set("Cookie", cookie)
+        it("should return 404 getting an envelope that does not exist", async () => {
+          const response = await supertest(app)
+            .get(`${route}/1500`)
+            .set("Cookie", cookie)
 
-        expect(response.statusCode).toEqual(404)
+          expect(response.statusCode).toEqual(404)
+        })
+
+        it("should return a 400 using an incorrect path variable", async () => {
+          const expectedBody = {
+            errors: [
+              {
+                message: MESSAGES.ID_MUST_BE_INT,
+              },
+            ],
+          }
+
+          const response = await supertest(app)
+            .get(`${route}/test`)
+            .set("Cookie", cookie)
+
+          expect(response.statusCode).toEqual(400)
+          expect(response.body).toEqual(expectedBody)
+        })
       })
     })
 
-    it("should return 201 and the id after creating an envelope", async () => {
-      const response = await supertest(app)
-        .post(route)
-        .set("Cookie", cookie)
-        .send(testEnvelope)
+    describe("POST", () => {
+      describe("/envelopes", () => {
+        it("should return 201 and the id after creating an envelope", async () => {
+          const response = await supertest(app)
+            .post(route)
+            .set("Cookie", cookie)
+            .send(testEnvelope)
 
-      expect(response.statusCode).toEqual(201)
-      expect(response.body).toStrictEqual({
-        message: MESSAGES.ENVELOPES.CREATION_SUCCESSFUL,
-        envelope: {
-          id: 11,
-        },
+          expect(response.statusCode).toEqual(201)
+          expect(response.body).toStrictEqual({
+            message: MESSAGES.ENVELOPES.CREATION_SUCCESSFUL,
+            envelope: {
+              id: 11,
+            },
+          })
+        })
+
+        it("should not be able to create envelope with empty body", async () => {
+          const expectedBody = {
+            errors: [
+              {
+                message: MESSAGES.ENVELOPES.CURRENT_AMOUNT_REQUIRED,
+              },
+              {
+                message: MESSAGES.ENVELOPES.NAME_REQUIRED,
+              },
+              {
+                message: MESSAGES.ENVELOPES.ENVELOPE_LIMIT_REQUIRED,
+              },
+            ],
+          }
+          const response = await supertest(app)
+            .post(route)
+            .set("Cookie", cookie)
+
+          expect(response.statusCode).toEqual(400)
+          expect(response.body).toStrictEqual(expectedBody)
+        })
+
+        it("should not be able to create envelope using strings for body properties", async () => {
+          const testEnvelope = {
+            current_amount: "amount",
+            envelope_limit: "limit",
+            name: "Gas",
+          }
+          const expectedBody = {
+            errors: [
+              {
+                message: MESSAGES.ENVELOPES.CURRENT_AMOUNT_REQUIRED,
+              },
+              {
+                message: MESSAGES.ENVELOPES.ENVELOPE_LIMIT_REQUIRED,
+              },
+            ],
+          }
+          const response = await supertest(app)
+            .post(route)
+            .set("Cookie", cookie)
+            .send(testEnvelope)
+
+          expect(response.statusCode).toEqual(400)
+          expect(response.body).toStrictEqual(expectedBody)
+        })
+      })
+
+      describe("/envelopes/:id/transactions", () => {
+        it("should return 201 and the transaction id after creating an envelope transaction", async () => {
+          const expectedBody = {
+            message: MESSAGES.TRANSACTIONS.CREATION_SUCCESSFUL,
+          }
+          const response = await supertest(app)
+            .post(`${route}/11/transactions`)
+            .set("Cookie", cookie)
+            .send({ amount: 10 })
+
+          expect(response.statusCode).toEqual(201)
+          expect(response.body).toMatchObject(expectedBody)
+        })
+
+        it("should subtract transaction amount value to the envelope's current_amount", async () => {
+          const testEnvelope = {
+            current_amount: 500,
+            envelope_limit: 600,
+            name: "test",
+          }
+          const transactionAmount = 100
+          const expectedNewAmount = `$${testEnvelope.current_amount - transactionAmount}.00`
+
+          const envelopeResponse = await supertest(app)
+            .post(route)
+            .set("Cookie", cookie)
+            .send(testEnvelope)
+          const envelopeId = envelopeResponse.body.envelope.id
+
+          await supertest(app)
+            .post(`${route}/${envelopeId}/transactions`)
+            .set("Cookie", cookie)
+            .send({ amount: transactionAmount })
+
+          const envelopeAfterTransactionResponse = await supertest(app)
+            .get(`${route}/${envelopeId}`)
+            .set("Cookie", cookie)
+
+          expect(envelopeAfterTransactionResponse.body.current_amount).toEqual(expectedNewAmount)
+        })
+
+        it("should not be able to create envelope transactions without an amount", async () => {
+          const expectedBody = {
+            errors: [
+              {
+                message: MESSAGES.ENVELOPES.CURRENT_AMOUNT_REQUIRED,
+              },
+            ],
+          }
+          const response = await supertest(app)
+            .post(`${route}/11/transactions`)
+            .set("Cookie", cookie)
+
+          expect(response.statusCode).toEqual(400)
+          expect(response.body).toStrictEqual(expectedBody)
+        })
       })
     })
 

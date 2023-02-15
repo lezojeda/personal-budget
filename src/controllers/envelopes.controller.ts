@@ -159,7 +159,12 @@ const createEnvelopeTransaction = async (
         timestamp,
         user_id: userId,
       })
-      res.status(201).json(queryResult.rows[0])
+      res.status(201).json({
+        message: MESSAGES.TRANSACTIONS.CREATION_SUCCESSFUL,
+        transaction: {
+          ...queryResult.rows[0],
+        },
+      })
     }
   } catch (error) {
     next(error)
