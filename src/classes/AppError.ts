@@ -12,8 +12,8 @@ export class AppError extends Error {
   public readonly httpStatusCode: StatusCodes
 
   /**
-   * Determines if this error is a serious mistake. 
-   * Setting it to true means that the error is normal 
+   * Determines if this error is a serious mistake.
+   * Setting it to true means that the error is normal
    * and the user should receive an explanation what caused it.
    */
   public readonly isOperational: boolean = true

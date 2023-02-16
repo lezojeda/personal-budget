@@ -3,26 +3,26 @@ services:
   dev-db:
     image: postgres:13
     ports:
-     - 5434:5432
-    environment: 
+      - 5434:5432
+    environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: personal_budget
     networks:
       - personal_budget
     volumes:
-    - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   test-db:
     image: postgres:13
     ports:
-     - 5435:5432
-    environment: 
+      - 5435:5432
+    environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: personal_budget_test
     networks:
       - personal_budget
     volumes:
-    - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 networks:
   personal_budget:

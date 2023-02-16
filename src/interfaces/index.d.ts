@@ -1,5 +1,5 @@
 import { Envelope } from "../models/Envelope.model"
-import { ITransaction } from './Transaction.interface'
+import { ITransaction } from "./Transaction.interface"
 
 export {}
 

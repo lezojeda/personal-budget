@@ -28,29 +28,23 @@ import docs from "./docs/docs.json"
 import { getPool } from "./src/db"
 
 const createApp = () => {
-  const isTesting =process.env.NODE_ENV === "test"
+  const isTesting = process.env.NODE_ENV === "test"
   const app = express()
 
   // Middlewares
   app.use(cors())
-  app.use(
-    morgan("dev", { skip: () => isTesting })
-  )
+  app.use(morgan("dev", { skip: () => isTesting }))
   app.use(bodyParser.json())
   app.use("/docs", serve, setup(docs))
 
   // Session middleware
-  const store =
-    isTesting
-      ? new MemoryStore()
-      : new (PGSimple(session))({ pool: getPool() })
+  const store = isTesting
+    ? new MemoryStore()
+    : new (PGSimple(session))({ pool: getPool() })
 
   const cookie = {
     maxAge: 1000 * 60 * 60 * 6,
-    secure:
-      process.env.NODE_ENV === "development" || isTesting
-        ? false
-        : true,
+    secure: process.env.NODE_ENV === "development" || isTesting ? false : true,
     sameSite: "none" as const,
   }
 

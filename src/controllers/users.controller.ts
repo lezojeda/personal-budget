@@ -12,7 +12,7 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
         bodyData
       )
 
-      const user  = queryResult.rows[0]
+      const user = queryResult.rows[0]
       delete user.hash
       res.json(user)
     }

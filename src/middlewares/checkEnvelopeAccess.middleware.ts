@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
-import { AppError } from '../classes/AppError'
-import { checkEnvelopeExistsAndIsAccessible } from '../utils/envelopes.utils'
+import { AppError } from "../classes/AppError"
+import { checkEnvelopeExistsAndIsAccessible } from "../utils/envelopes.utils"
 
 const checkEnvelopeAccess = async (
   req: Request,
