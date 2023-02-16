@@ -33,7 +33,7 @@ describe("Transactions", () => {
     })
 
     describe("GET /transactions", () => {
-      it("should return 200 status code and list of transactions", async () => {
+      it("should return 200 status code and list of user transactions", async () => {
         const response = await supertest(app).get(route).set("Cookie", cookie)
 
         expect(response.statusCode).toEqual(200)
@@ -42,7 +42,7 @@ describe("Transactions", () => {
     })
 
     describe("GET /transactions/:id", () => {
-      it("should return 200 getting a transaction", async () => {
+      it("should return 200 if transaction exists", async () => {
         const response = await supertest(app)
           .get(`${route}/1`)
           .set("Cookie", cookie)
@@ -50,7 +50,7 @@ describe("Transactions", () => {
         expect(response.statusCode).toEqual(200)
       })
 
-      it("should return 404 getting a transaction that does not exist", async () => {
+      it("should return 404 if it does not exist", async () => {
         const response = await supertest(app)
           .get(`${route}/1500`)
           .set("Cookie", cookie)
@@ -58,7 +58,7 @@ describe("Transactions", () => {
         expect(response.statusCode).toEqual(404)
       })
 
-      it("should return a 400 using an incorrect path variable", async () => {
+      it("should return a 400 with an incorrect path variable", async () => {
         const expectedBody = {
           errors: [
             {
@@ -81,11 +81,11 @@ describe("Transactions", () => {
         const newAmount = 2
 
         const transactionToUpdate = await supertest(app)
-          .get(`${route}/1`)
+          .get(`${route}/5`)
           .set("Cookie", cookie)
 
         const updateResponse = await supertest(app)
-          .patch(`${route}/1`)
+          .patch(`${route}/5`)
           .set("Cookie", cookie)
           .send({ amount: newAmount })
 
@@ -130,11 +130,16 @@ describe("Transactions", () => {
 
     describe("DELETE /transactions/:id", () => {
       it("should return 204 deleting a transaction", async () => {
-        const response = await supertest(app)
+        const deleteResponse = await supertest(app)
           .delete(`${route}/1`)
           .set("Cookie", cookie)
 
-        expect(response.statusCode).toEqual(204)
+        const getTransactionResponse = await supertest(app)
+          .get(`${route}/1`)
+          .set("Cookie", cookie)
+
+        expect(deleteResponse.statusCode).toEqual(204)
+        expect(getTransactionResponse.statusCode).toEqual(404)
       })
 
       it("should return 404 status code if transaction ID does not exist", async () => {

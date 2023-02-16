@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import { matchedData } from "express-validator"
 import { StatusCodes } from "http-status-codes"
-import { ForbidenError } from "../classes/ForbidenError"
 import { MESSAGES } from "../constants/messages"
 import { Envelope } from "../models/Envelope.model"
 import { Transaction } from "../models/Transaction.model"
@@ -47,7 +46,10 @@ const updateTransactionById = async (
       return next([{ message: MESSAGES.VALIDATION.INCLUDE_VALID_BODY }])
     }
 
-    const updatedTransactionResponse = await new Transaction().updateById(id, bodyData)
+    const updatedTransactionResponse = await new Transaction().updateById(
+      id,
+      bodyData
+    )
 
     /**
      * Update envelope with the new transaction's amount

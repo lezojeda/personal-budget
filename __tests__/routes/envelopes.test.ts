@@ -10,11 +10,6 @@ describe("Envelopes", () => {
   let cookie: string
 
   const route = "/envelopes"
-  const testEnvelope = {
-    current_amount: 500,
-    envelope_limit: 600,
-    name: "Gas",
-  }
 
   beforeAll(async () => {
     server = app.listen()
@@ -47,7 +42,7 @@ describe("Envelopes", () => {
     })
 
     describe("GET /envelopes/:id", () => {
-      it("should return 200 getting an envelope", async () => {
+      it("should return 200 if envelope exists", async () => {
         const response = await supertest(app)
           .get(`${route}/1`)
           .set("Cookie", cookie)
@@ -61,7 +56,7 @@ describe("Envelopes", () => {
         })
       })
 
-      it("should return 404 getting an envelope that does not exist", async () => {
+      it("should return 404 if it does not exist", async () => {
         const response = await supertest(app)
           .get(`${route}/1500`)
           .set("Cookie", cookie)
@@ -69,7 +64,7 @@ describe("Envelopes", () => {
         expect(response.statusCode).toEqual(404)
       })
 
-      it("should return a 400 using an incorrect path variable", async () => {
+      it("should return a 400 with an incorrect path variable", async () => {
         const expectedBody = {
           errors: [
             {
@@ -89,6 +84,12 @@ describe("Envelopes", () => {
 
     describe("POST/envelopes", () => {
       it("should return 201 and the id after creating an envelope", async () => {
+        const testEnvelope = {
+          current_amount: 500,
+          envelope_limit: 600,
+          name: "Gas",
+        }
+
         const response = await supertest(app)
           .post(route)
           .set("Cookie", cookie)
@@ -248,11 +249,16 @@ describe("Envelopes", () => {
 
     describe("DELETE /envelopes/:id", () => {
       it("should return 204 deleting an envelope", async () => {
-        const response = await supertest(app)
+        const deleteEnvelopeResponse = await supertest(app)
           .delete(`${route}/11`)
           .set("Cookie", cookie)
 
-        expect(response.statusCode).toEqual(204)
+        const getEnvelopeResponse = await supertest(app)
+          .get(`${route}/11`)
+          .set("Cookie", cookie)
+
+        expect(deleteEnvelopeResponse.statusCode).toEqual(204)
+        expect(getEnvelopeResponse.statusCode).toEqual(404)
       })
 
       it("should return 404 getting an envelope that does not exist", async () => {
