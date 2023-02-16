@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express"
 import { matchedData } from "express-validator/src/matched-data"
 import { StatusCodes } from "http-status-codes"
 import { AppError } from "../classes/AppError"
+import { MESSAGES } from "../constants/messages"
 import { Envelope } from "../models/Envelope.model"
 import { Transaction } from "../models/Transaction.model"
 import { checkEnvelopeExistsAndIsAccessible } from "../utils/envelopes.utils"
@@ -28,10 +29,6 @@ const createEnvelope = async (
   next: NextFunction
 ) => {
   try {
-    if (Object.keys(req.body).length === 0) {
-      return next([{ message: "Include a body in the request" }])
-    }
-
     const { current_amount, envelope_limit, name } = req.body
 
     const queryResult = await new Envelope().createEnvelope({
@@ -42,7 +39,7 @@ const createEnvelope = async (
     })
 
     return res.status(201).json({
-      message: "Envelope created successfully",
+      message: MESSAGES.ENVELOPES.CREATION_SUCCESSFUL,
       envelope: {
         ...queryResult.rows[0],
       },
@@ -126,11 +123,12 @@ const updateEnvelopeById = async (
 
     const bodyData = matchedData(req, { locations: ["body"] })
     if (Object.keys(bodyData).length === 0) {
-      return next([{ message: "Include a valid body in the request" }])
+      return next([{ message: MESSAGES.VALIDATION.INCLUDE_VALID_BODY }])
     }
 
-    const updatedEnvelope = await new Envelope().updateById(id, bodyData)
+    const queryResult = await new Envelope().updateById(id, bodyData)
 
+    const updatedEnvelope = queryResult.rows[0]
     res.json(updatedEnvelope)
   } catch (error) {
     next(error)
@@ -157,11 +155,16 @@ const createEnvelopeTransaction = async (
       const timestamp = new Date().toISOString().substring(0, 19)
       const queryResult = await new Transaction().createTransaction({
         amount,
-        envelope_id: id,
+        envelope_id: Number(id),
         timestamp,
         user_id: userId,
       })
-      res.status(201).json(queryResult.rows[0])
+      res.status(201).json({
+        message: MESSAGES.TRANSACTIONS.CREATION_SUCCESSFUL,
+        transaction: {
+          ...queryResult.rows[0],
+        },
+      })
     }
   } catch (error) {
     next(error)

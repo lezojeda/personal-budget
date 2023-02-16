@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import passport from "passport"
 import { AppError } from "../classes/AppError"
+import { MESSAGES } from "../constants/messages"
 import { User } from "../models/User.model"
 import { hashPassword } from "../utils/auth.utils"
 
@@ -10,7 +11,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
     if (err) next(err)
     if (!user) {
       const badCredentialsError = new AppError({
-        message: "Bad credentials",
+        message: MESSAGES.AUTH.BAD_CREDENTIALS,
         httpStatusCode: StatusCodes.UNAUTHORIZED,
       })
 

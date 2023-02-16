@@ -14,7 +14,7 @@ class Transaction extends Base<ITransaction> implements ITransaction {
 
   public async createTransaction(values: {
     amount: number
-    envelope_id: string
+    envelope_id: number
     timestamp: string
     user_id?: number
   }) {
