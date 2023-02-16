@@ -16,7 +16,7 @@
     "db:test:rm": "docker compose rm test-db -s -f -v",
     "db:test:up": "docker compose up test-db -d",
     "db:test:restart": "npm run db:test:rm && npm run db:test:up",
-    "pretest": "npm run db:test:restart" ,
+    "pretest": "npm run db:test:restart",
     "test": "dotenv -e .env.test jest",
     "posttest": "npm run db:test:rm"
   },
@@ -57,6 +57,7 @@
     "dotenv-cli": "^7.0.0",
     "jest": "^29.4.2",
     "nodemon": "^2.0.20",
+    "prettier": "2.8.4",
     "supertest": "^6.3.3",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
