@@ -100,7 +100,7 @@
                 "type": "object",
                 "properties": {
                   "current_amount": {
-                    "$ref": "#/components/schemas/Amount"
+                    "$ref": "#/components/schemas/Money"
                   },
                   "envelope_limit": {
                     "type": "number",
@@ -545,7 +545,7 @@
                 "type": "object",
                 "properties": {
                   "amount": {
-                    "$ref": "#/components/schemas/Amount"
+                    "$ref": "#/components/schemas/Money"
                   }
                 }
               }
@@ -743,7 +743,7 @@
             "$ref": "#/components/responses/400BadRequest"
           },
           "409": {
-            "$ref": "#/components/responses/409409UsernameConflict"
+            "$ref": "#/components/responses/409UsernameConflict"
           },
           "500": {
             "$ref": "#/components/responses/500InternalServerError"
@@ -808,7 +808,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Envelope"
+                  "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -817,7 +817,7 @@
             "$ref": "#/components/responses/401Unauthorized"
           },
           "409": {
-            "$ref": "#/components/responses/409409UsernameConflict"
+            "$ref": "#/components/responses/409UsernameConflict"
           },
           "500": {
             "$ref": "#/components/responses/500InternalServerError"
@@ -999,7 +999,7 @@
             "$ref": "#/components/schemas/EntityId"
           },
           "amount": {
-            "$ref": "#/components/schemas/Amount"
+            "$ref": "#/components/schemas/Money"
           },
           "envelope_id": {
             "$ref": "#/components/schemas/EntityId"
@@ -1020,6 +1020,30 @@
           "envelope_id": 2
         }
       },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/EntityId"
+          },
+          "salary": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "savings": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "username": {
+            "type": "string",
+            "example": "john_doe"
+          }
+        },
+        "example": {
+          "id": 1,
+          "salary": "$2,000.00",
+          "savings": "$3,000.00",
+          "username": "test2"
+      }
+      },
       "ErrorResponse": {
         "type": "object",
         "properties": {
@@ -1036,7 +1060,7 @@
         "format": "int32",
         "example": "1"
       },
-      "Amount": {
+      "Money": {
         "type": "number",
         "format": "float",
         "example": "532.6"
