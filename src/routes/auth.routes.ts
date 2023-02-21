@@ -8,28 +8,32 @@ const authRouter = express.Router()
 
 authRouter.post(
   "/signin",
-  body("username", MESSAGES.AUTH.USERNAME_REQUIRED)
-    .trim()
-    .notEmpty()
-    .isString(),
-  body("password", MESSAGES.AUTH.PASSWORD_REQUIRED)
-    .trim()
-    .notEmpty()
-    .isString(),
+  [
+    body("username", MESSAGES.AUTH.USERNAME_REQUIRED)
+      .trim()
+      .notEmpty()
+      .isString(),
+    body("password", MESSAGES.AUTH.PASSWORD_REQUIRED)
+      .trim()
+      .notEmpty()
+      .isString(),
+  ],
   handleValidationResult,
   signIn
 )
 
 authRouter.post(
   "/signup",
-  body("username", MESSAGES.AUTH.USERNAME_REQUIRED)
-    .trim()
-    .notEmpty()
-    .isString(),
-  body("password", MESSAGES.AUTH.PASSWORD_REQUIRED)
-    .trim()
-    .notEmpty()
-    .isString(),
+  [
+    body("username", MESSAGES.AUTH.USERNAME_REQUIRED)
+      .trim()
+      .notEmpty()
+      .isString(),
+    body("password", MESSAGES.AUTH.PASSWORD_REQUIRED)
+      .trim()
+      .notEmpty()
+      .isString(),
+  ],
   handleValidationResult,
   signUp,
   usersErrorHandler

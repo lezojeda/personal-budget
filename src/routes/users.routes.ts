@@ -7,23 +7,25 @@ const usersRouter = express.Router()
 
 usersRouter.patch(
   "/",
-  body("savings", "savings must be a number")
-    .trim()
-    .isString()
-    .optional({ checkFalsy: true })
-    .escape(),
-  body("salary", "salary must be a number")
-    .trim()
-    .isFloat()
-    .optional({ checkFalsy: true })
-    .escape(),
-  body("username", "username must be a string")
-    .trim()
-    .isString()
-    .optional({ checkFalsy: true })
-    .escape(),
-  updateUser,
+  [
+    body("savings", "savings must be a number")
+      .trim()
+      .isString()
+      .optional({ checkFalsy: true })
+      .escape(),
+    body("salary", "salary must be a number")
+      .trim()
+      .isFloat()
+      .optional({ checkFalsy: true })
+      .escape(),
+    body("username", "username must be a string")
+      .trim()
+      .isString()
+      .optional({ checkFalsy: true })
+      .escape(),
+  ],
   validateRequestBody,
+  updateUser,
   usersErrorHandler
 )
 

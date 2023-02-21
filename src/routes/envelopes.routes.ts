@@ -29,13 +29,15 @@ envelopesRouter.get("/", getEnvelopes)
 
 envelopesRouter.post(
   "/",
-  body("current_amount", MESSAGES.ENVELOPES.CURRENT_AMOUNT_REQUIRED)
-    .trim()
-    .isFloat({ min: 0 }),
-  body("name", MESSAGES.ENVELOPES.NAME_REQUIRED).trim().isString().notEmpty(),
-  body("envelope_limit", MESSAGES.ENVELOPES.ENVELOPE_LIMIT_REQUIRED)
-    .trim()
-    .isFloat({ min: 0 }),
+  [
+    body("current_amount", MESSAGES.ENVELOPES.CURRENT_AMOUNT_REQUIRED)
+      .trim()
+      .isFloat({ min: 0 }),
+    body("name", MESSAGES.ENVELOPES.NAME_REQUIRED).trim().isString().notEmpty(),
+    body("envelope_limit", MESSAGES.ENVELOPES.ENVELOPE_LIMIT_REQUIRED)
+      .trim()
+      .isFloat({ min: 0 }),
+  ],
   handleValidationResult,
   validateRequestBody,
   createEnvelope
@@ -43,15 +45,17 @@ envelopesRouter.post(
 
 envelopesRouter.post(
   "/transfer",
-  query(
-    "from",
-    "Include a query parameter indicating the envelope id to transfer FROM"
-  ).isInt(),
-  query(
-    "to",
-    "Include a query parameter indicating the envelope id to transfer TO"
-  ).isString(),
-  body("amount", "Include an amount which must be a number").trim().isFloat(),
+  [
+    query(
+      "from",
+      "Include a query parameter indicating the envelope id to transfer FROM"
+    ).isInt(),
+    query(
+      "to",
+      "Include a query parameter indicating the envelope id to transfer TO"
+    ).isString(),
+    body("amount", "Include an amount which must be a number").trim().isFloat(),
+  ],
   handleValidationResult,
   transferBudgets
 )
@@ -62,16 +66,18 @@ envelopesRouter.get("/:id", getEnvelopeById)
 
 envelopesRouter.patch(
   "/:id",
-  body("name", MESSAGES.ENVELOPES.NAME_TYPE)
-    .trim()
-    .isString()
-    .optional({ checkFalsy: true })
-    .escape(),
-  body("envelope_limit", MESSAGES.ENVELOPES.ENVELOPE_LIMIT_TYPE)
-    .trim()
-    .isFloat({ min: 0 })
-    .optional({ checkFalsy: true })
-    .escape(),
+  [
+    body("name", MESSAGES.ENVELOPES.NAME_TYPE)
+      .trim()
+      .isString()
+      .optional({ checkFalsy: true })
+      .escape(),
+    body("envelope_limit", MESSAGES.ENVELOPES.ENVELOPE_LIMIT_TYPE)
+      .trim()
+      .isFloat({ min: 0 })
+      .optional({ checkFalsy: true })
+      .escape(),
+  ],
   handleValidationResult,
   validateRequestBody,
   updateEnvelopeById

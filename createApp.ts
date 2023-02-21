@@ -46,6 +46,7 @@ const createApp = () => {
     maxAge: 1000 * 60 * 60 * 6,
     secure: process.env.NODE_ENV === "development" || isTesting ? false : true,
     sameSite: "none" as const,
+    httpOnly: true
   }
 
   app.use(
