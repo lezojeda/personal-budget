@@ -6,11 +6,13 @@ export const isAuthenticated = (
   res: Response,
   next: NextFunction
 ) => {
-  if (
-    req.isAuthenticated() ||
-    req.baseUrl === "/auth/signin" ||
-    req.baseUrl === "/auth/signup"
-  ) {
+  const unrestrictedRoutes = [
+    "/auth/signin",
+    "/auth/signup",
+    "/auth/github",
+    "/auth/github/callback",
+  ]
+  if (req.isAuthenticated() || unrestrictedRoutes.includes(req.baseUrl)) {
     next()
   } else {
     next(new UnauthorizedError())

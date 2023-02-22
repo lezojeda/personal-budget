@@ -1,4 +1,7 @@
+import dotenv from "dotenv"
+dotenv.config()
 import { Strategy } from "passport-local"
+import passportGithub2 from "passport-github2"
 import { comparePasswords } from "../utils/auth.utils"
 import { User } from "../models/User.model"
 
@@ -18,7 +21,8 @@ const serializeUserCallback = (
   user: Express.User,
   done: (err: any, id?: unknown) => void
 ) => {
-  done(null, user.id)
+  // Establish a session for the user with their id
+  return done(null, user.id)
 }
 
 const localStrategy = new Strategy(async (username, password, done) => {
@@ -34,4 +38,32 @@ const localStrategy = new Strategy(async (username, password, done) => {
   }
 })
 
-export { deserializeUserCallback, localStrategy, serializeUserCallback }
+const gitHubStrategy = new passportGithub2.Strategy(
+  {
+    clientID: process.env.GITHUB_CLIENT_ID ?? "",
+    clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
+    callbackURL: "http://localhost:3000/auth/github/callback",
+  },
+  async (accessToken: string, refreshToken: string, profile: any, done: any) => {
+    const user = await new User().getByUsername(profile.username)
+
+    if (user) {
+      return done(null, user)
+    }
+    // Creates a new user record in your database based on the user's GitHub profile information
+    const queryResult = await new User().create(
+      ["username"],
+      [profile.username]
+    )
+
+    // Send the psql created user instead of the github profile
+    return done(null, queryResult.rows[0])
+  }
+)
+
+export {
+  deserializeUserCallback,
+  localStrategy,
+  serializeUserCallback,
+  gitHubStrategy,
+}

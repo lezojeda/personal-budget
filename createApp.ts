@@ -10,6 +10,7 @@ import session, { MemoryStore } from "express-session"
 import passport from "passport"
 import {
   deserializeUserCallback,
+  gitHubStrategy,
   localStrategy,
   serializeUserCallback,
 } from "./src/config/passport"
@@ -46,7 +47,7 @@ const createApp = () => {
     maxAge: 1000 * 60 * 60 * 6,
     secure: process.env.NODE_ENV === "development" || isTesting ? false : true,
     sameSite: "none" as const,
-    httpOnly: true
+    httpOnly: true,
   }
 
   app.use(
@@ -66,6 +67,7 @@ const createApp = () => {
   passport.serializeUser(serializeUserCallback)
   passport.deserializeUser(deserializeUserCallback)
   passport.use(localStrategy)
+  passport.use(gitHubStrategy)
 
   app.use("*", isAuthenticated)
 
