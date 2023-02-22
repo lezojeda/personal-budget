@@ -68,7 +68,6 @@ authRouter.get(
           params: {
             client_id: process.env.GITHUB_CLIENT_ID,
             redirect_uri: "http://localhost:3000/auth/github/callback",
-            scope: "user",
             state: req.query.state,
           },
         }
@@ -88,7 +87,7 @@ authRouter.get(
   (req: Request, res: Response) => {
     // Finally, redirect the user back to the front-end application, passing any necessary data as query parameters in the URL
     const redirectUrl =
-      "http://localhost:5173?access_token=" + req.user?.accessToken
+      "http://localhost:5173"
     res.redirect(redirectUrl)
   }
 )
