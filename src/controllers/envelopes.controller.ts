@@ -29,10 +29,9 @@ const createEnvelope = async (
   next: NextFunction
 ) => {
   try {
-    const { current_amount, envelope_limit, name } = req.body
+    const { envelope_limit, name } = req.body
 
     const queryResult = await new Envelope().createEnvelope({
-      current_amount,
       envelope_limit,
       name,
       userId: req.user?.id,
@@ -148,7 +147,7 @@ const createEnvelopeTransaction = async (
 
     const updateEnvelopeQueryResult = await new Envelope().updateEnvelopeAmount(
       id,
-      -amount
+      amount
     )
 
     if (updateEnvelopeQueryResult.rowCount > 0) {
@@ -167,6 +166,20 @@ const createEnvelopeTransaction = async (
       })
     }
   } catch (error) {
+    if (error instanceof Error) {
+      const newAmountGreaterThanEnvelopeLimitConstraint =
+        "constraint" in error &&
+        error.constraint === "current_amount_within_envelope_limit"
+
+      if (newAmountGreaterThanEnvelopeLimitConstraint) {
+        return next(
+          new AppError({
+            message: MESSAGES.ENVELOPES.NEW_AMOUNT_GREATER_THAN_LIMIT,
+            httpStatusCode: StatusCodes.BAD_REQUEST,
+          })
+        )
+      }
+    }
     next(error)
   }
 }

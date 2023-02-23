@@ -30,9 +30,6 @@ envelopesRouter.get("/", getEnvelopes)
 envelopesRouter.post(
   "/",
   [
-    body("current_amount", MESSAGES.ENVELOPES.CURRENT_AMOUNT_REQUIRED)
-      .trim()
-      .isFloat({ min: 0 }),
     body("name", MESSAGES.ENVELOPES.NAME_REQUIRED).trim().isString().notEmpty(),
     body("envelope_limit", MESSAGES.ENVELOPES.ENVELOPE_LIMIT_REQUIRED)
       .trim()

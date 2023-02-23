@@ -13,14 +13,13 @@ class Envelope extends Base<IEnvelope> implements IEnvelope {
   public table = TableNames.Envelopes
 
   public async createEnvelope(values: {
-    current_amount: number
     envelope_limit: number
     name: string
     userId?: number
   }) {
     const queryResult = await this.create(
       ["current_amount", "envelope_limit", "name", "user_id"],
-      Object.values(values)
+      [0, ...Object.values(values)]
     )
 
     return queryResult

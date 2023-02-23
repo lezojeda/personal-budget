@@ -99,9 +99,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "current_amount": {
-                    "$ref": "#/components/schemas/Money"
-                  },
                   "envelope_limit": {
                     "type": "number",
                     "format": "float",
@@ -297,7 +294,7 @@
         ],
         "operationId": "createEnvelopeTransaction",
         "requestBody": {
-          "description": "Must contain the amount to subtract from the envelope and assign to the new transaction",
+          "description": "Must contain the amount to subtract from the envelope and assign to the new transaction. Note that the new current_amount can't be greater than the envelope_limit",
           "content": {
             "application/json": {
               "schema": {
@@ -341,6 +338,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
           },
           "401": {
             "$ref": "#/components/responses/401Unauthorized"
