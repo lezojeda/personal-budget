@@ -86,10 +86,13 @@ authRouter.get(
   passport.authenticate("github"),
   (req: Request, res: Response) => {
     // Finally, redirect the user back to the front-end application, passing any necessary data as query parameters in the URL
-    const redirectUrl =
-      "http://localhost:5173"
+    const redirectUrl = "http://localhost:5173"
     res.redirect(redirectUrl)
   }
 )
+
+authRouter.get("/check", (req, res) => {
+  res.json()
+})
 
 export { authRouter }

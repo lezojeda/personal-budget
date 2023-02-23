@@ -770,6 +770,25 @@
         }
       }
     },
+    "/auth/check": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Check authentication",
+        "description": "An endpoint to check if user's cookie (if any) is valid",
+        "operationId": "check",
+        "responses": {
+          "200": {
+            "description": "User is authorized"
+          },
+          "401": {
+            "$ref": "#/components/responses/401Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/500InternalServerError"
+          }
+        }
+      }
+    },
     "/users": {
       "patch": {
         "tags": ["users"],
