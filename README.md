@@ -1,4 +1,4 @@
-# Personal Budget Express App
+# Personal Budget API
 
 This is a project created as part of the [Codecademy Back-end Engineer career path](https://join.codecademy.com/learn/paths/back-end-engineer-career-path/). 
 
