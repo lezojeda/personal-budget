@@ -15,8 +15,9 @@ Built with:
 
 ### Prerequisites
 
-- Node.js
+- Node.js v16.x
 - Docker
+- Docker compose
 
 ### Steps
 
@@ -37,7 +38,7 @@ npm install
 ```makefile
 DATABASE_URL=<your_database_url>
 SESSION_SECRET=<your_session_secret>
-NODE_ENV=<development_or_testing>
+NODE_ENV=<development_or_test>
 
 # If you want to enable github OAuth
 GITHUB_CLIENT_ID=<your_github_client_id>
