@@ -1,6 +1,15 @@
 # Personal Budget Express App
 
-This is a project created as part of the [Codecademy Back-end Engineer career path](https://join.codecademy.com/learn/paths/back-end-engineer-career-path/). It is built using Express and TypeScript mainly.
+This is a project created as part of the [Codecademy Back-end Engineer career path](https://join.codecademy.com/learn/paths/back-end-engineer-career-path/). 
+
+## Overview
+An API that allows clients to create and manage a personal budget. Using [Envelope Budgeting principles](https://www.thebalancemoney.com/what-is-envelope-budgeting-1293682), it allow users to manage budget envelopes and track the balance of each envelope.
+
+Built with:
+- Express using Typescript. 
+- Passport for authentication
+- PostgreSQL for the database with the [node-pg](https://node-postgres.com/) package as driver.
+- `jest` and `supertest` for testing
 
 ## Getting Started
 
@@ -8,6 +17,8 @@ This is a project created as part of the [Codecademy Back-end Engineer career pa
 
 - Node.js
 - Docker
+
+### Steps
 
 1. Clone the repository:
 
