@@ -1,6 +1,12 @@
 # Personal Budget API
 
-This is a project created as part of the [Codecademy Back-end Engineer career path](https://join.codecademy.com/learn/paths/back-end-engineer-career-path/). 
+This is a project created as part of the [Codecademy Back-end Engineer career path](https://join.codecademy.com/learn/paths/back-end-engineer-career-path/).
+
+## Table of Contents
+- [Getting Started](#getting-started)
+- [Basic Usage](#basic-usage)
+- [Documentation](#documentation)
+- [Testing](#testing)
 
 ## Overview
 An API that allows clients to create and manage a personal budget. Using [Envelope Budgeting principles](https://www.thebalancemoney.com/what-is-envelope-budgeting-1293682), it allow users to manage budget envelopes and track the balance of each envelope.
@@ -54,6 +60,12 @@ npm run dev
 ```
 
 This will start the development server with hot-reloading enabled. You can access the app at http://localhost:3000.
+
+## Basic usage
+
+1. Sign up 
+
+## Documentation
 
 ## Testing
 
