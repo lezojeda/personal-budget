@@ -57,4 +57,4 @@ This will start the development server with hot-reloading enabled. You can acces
 
 ## Testing
 
-This app uses Jest for testing. To run the tests, make sure docker is running, env variables set and use `npm test`. There are pretest and posttest scripts which restart the test database and remove it respectively.
+This app uses Jest for testing. To run the tests, make sure docker is running, env variables set (should be by default in the .env.test file) and use `npm test`. There are pretest and posttest scripts which restart the test database and remove it respectively.
