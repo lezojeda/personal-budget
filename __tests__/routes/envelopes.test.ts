@@ -49,7 +49,6 @@ describe("Envelopes", () => {
 
         expect(response.statusCode).toEqual(200)
         expect(response.body).toMatchObject({
-          current_amount: "$100.00",
           envelope_limit: "$1,000.00",
           name: "Envelope 1",
           user_id: 1,
@@ -108,9 +107,6 @@ describe("Envelopes", () => {
         const expectedBody = {
           errors: [
             {
-              message: MESSAGES.ENVELOPES.CURRENT_AMOUNT_REQUIRED,
-            },
-            {
               message: MESSAGES.ENVELOPES.NAME_REQUIRED,
             },
             {
@@ -132,9 +128,6 @@ describe("Envelopes", () => {
         }
         const expectedBody = {
           errors: [
-            {
-              message: MESSAGES.ENVELOPES.CURRENT_AMOUNT_REQUIRED,
-            },
             {
               message: MESSAGES.ENVELOPES.ENVELOPE_LIMIT_REQUIRED,
             },
@@ -164,15 +157,15 @@ describe("Envelopes", () => {
         expect(response.body).toMatchObject(expectedBody)
       })
 
-      it("should subtract transaction amount value to the envelope's current_amount", async () => {
+      it("should add transaction amount value to the envelope's current_amount", async () => {
         const testEnvelope = {
-          current_amount: 500,
+          current_amount: 0,
           envelope_limit: 600,
           name: "test",
         }
         const transactionAmount = 100
         const expectedNewAmount = `$${
-          testEnvelope.current_amount - transactionAmount
+          testEnvelope.current_amount + transactionAmount
         }.00`
 
         const envelopeResponse = await supertest(app)
@@ -206,6 +199,23 @@ describe("Envelopes", () => {
         const response = await supertest(app)
           .post(`${route}/11/transactions`)
           .set("Cookie", cookie)
+
+        expect(response.statusCode).toEqual(400)
+        expect(response.body).toStrictEqual(expectedBody)
+      })
+
+      it("should not be able to create envelope transaction that would lead to surpass the envelope's limit", async () => {
+        const expectedBody = {
+          errors: [
+            {
+              message: MESSAGES.ENVELOPES.NEW_AMOUNT_GREATER_THAN_LIMIT,
+            },
+          ],
+        }
+        const response = await supertest(app)
+          .post(`${route}/11/transactions`)
+          .set("Cookie", cookie)
+          .send({ amount: 100000 })
 
         expect(response.statusCode).toEqual(400)
         expect(response.body).toStrictEqual(expectedBody)
