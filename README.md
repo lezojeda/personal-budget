@@ -1,6 +1,6 @@
 # Personal Budget Express App
 
-This is a project created as part of the Codecademy back-end engineer path. It is built using Express and TypeScript mainly.
+This is a project created as part of the [Codecademy Back-end Engineer career path](https://join.codecademy.com/learn/paths/back-end-engineer-career-path/). It is built using Express and TypeScript mainly.
 
 ## Getting Started
 
