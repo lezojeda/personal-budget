@@ -63,7 +63,15 @@ This will start the development server with hot-reloading enabled. You can acces
 
 ## Basic usage
 
-1. Sign up using the POST `/auth/signup` endpoint with a simple username and password
+1. Sign up using the POST `/auth/signup` endpoint with a simple username and password:
+
+```bash
+{
+    "username": "username",
+    "password": "password"
+}
+```
+
 2. Create an envelope using the POST `/envelopes` with the following request body:
 
 ```bash
@@ -83,7 +91,7 @@ All envelopes start with a `current_amount` of 0. As you make transactions, the 
 }
 ```
 
-4. Visualize your envelopes with the GET `/envelopes` endpoint
+4. Obtain your current envelopes with the GET `/envelopes` endpoint
 
 For more details, you can refer to the [documentation](#documentation).
 
