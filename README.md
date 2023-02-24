@@ -63,9 +63,32 @@ This will start the development server with hot-reloading enabled. You can acces
 
 ## Basic usage
 
-1. Sign up 
+1. Sign up using the POST `/auth/signup` endpoint with a simple username and password
+2. Create an envelope using the POST `/envelopes` with the following request body:
+
+```bash
+{
+    "envelope_limit": 300,
+    "name": "Gas"
+}
+```
+
+All envelopes start with a `current_amount` of 0. As you make transactions, the value gets updated up until it reaches the `envelope_limit` value. The API won't let you make a transaction that would result in a `current_amount` higher than the `envelope_limit`. If you wish, you can update the limit with the `PATCH` endpoint.
+
+3. Create a transaction with the POST `/envelopes/:id/transactions/` endpoint. This corresponds to spend money in that category. For example, if the envelope is Groceries and you spent $300 you call the endpoint with the following request body:
+
+```bash
+{
+    "amount": 300
+}
+```
+
+4. Visualize your envelopes with the GET `/envelopes` endpoint
+
+For more details, you can refer to the [documentation](#documentation).
 
 ## Documentation
+The API is documented using the `swagger-ui-express` package. The .json file can be found in the `docs` folder. With the project running the documentation can be found in the `/docs` endpoint
 
 ## Testing
 
