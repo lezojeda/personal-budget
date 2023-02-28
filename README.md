@@ -30,7 +30,7 @@ Built with:
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/<username>/personal-budget.git
+git clone https://github.com/lezojeda/personal-budget.git
 ```
 
 2. Install dependencies:
