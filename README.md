@@ -96,7 +96,7 @@ All envelopes start with a `current_amount` of 0. As you make transactions, the 
 For more details, you can refer to the [documentation](#documentation).
 
 ## Documentation
-The API is documented using the `swagger-ui-express` package. The .json file can be found in the `docs` folder. With the project running the documentation can be found in the `/docs` endpoint
+The API is documented using the `swagger-ui-express` package. The .json file can be found in the `docs` folder. With the project running the documentation can be accessed in the `/docs` endpoint
 
 ## Testing
 
