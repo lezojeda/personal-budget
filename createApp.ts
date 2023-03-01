@@ -31,9 +31,10 @@ import { getPool } from "./src/db"
 const createApp = () => {
   const isTesting = process.env.NODE_ENV === "test"
   const app = express()
-
   // Middlewares
-  app.use(cors())
+  app.use(
+    cors({ origin: process.env.CORS_ORIGINS?.split(","), credentials: true })
+  )
   app.use(morgan("dev", { skip: () => isTesting }))
   app.use(bodyParser.json())
   app.use("/docs", serve, setup(docs))
