@@ -101,3 +101,5 @@ The API is documented using the `swagger-ui-express` package. The .json file can
 ## Testing
 
 This app uses Jest for testing. To run the tests, make sure docker is running, env variables set (should be by default in the .env.test file) and use `npm test`. There are pretest and posttest scripts which restart the test database and remove it respectively.
+
+Test setup can be found in the `__tests__/setup.ts` file as well where users, envelopes and transactions are created to run some tests with. This file runs before **all** test suites.
