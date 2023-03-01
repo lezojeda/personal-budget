@@ -5,7 +5,7 @@ import { TableNames } from "../db/constants"
 abstract class Base<T extends QueryResultRow> {
   public table: TableNames
 
-  public async create(columns: string[], values: any[]) {
+  public async create(columns: string[], values: string[]) {
     const transactionText = `INSERT INTO ${
       this.table
     }(${columns.join()}) VALUES(${values
@@ -21,7 +21,7 @@ abstract class Base<T extends QueryResultRow> {
     return await executeTransaction<T>(transactionText, [id])
   }
 
-  public async getAllFromUser(userId?: string) {
+  public async getAllFromUser(userId: string) {
     const queryText = `SELECT * FROM ${this.table} WHERE user_id = $1`
     return await dbQuery<T>(queryText, [userId])
   }
@@ -32,7 +32,7 @@ abstract class Base<T extends QueryResultRow> {
     return await dbQuery<T>(queryText, [id])
   }
 
-  public async updateById(id: string, body: { [index: string]: any }) {
+  public async updateById(id: string, body: { [index: string]: string }) {
     const setClause = Object.keys(body)
       .map((key, index) => {
         return `${key} = $${index + 1}`

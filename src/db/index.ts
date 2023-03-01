@@ -9,14 +9,14 @@ const getDbPool = () => {
 
 const dbQuery = async <T extends QueryResultRow>(
   queryText: string,
-  values?: any[]
+  values?: string[]
 ) => {
   return getDbPool().query<T>(queryText, values)
 }
 
 const executeTransaction = async <T extends QueryResultRow>(
   text: string,
-  values: any[]
+  values: string[]
 ) => {
   const client = await getDbPool().connect()
   try {

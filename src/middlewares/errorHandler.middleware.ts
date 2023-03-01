@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express"
+import { Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { AppError } from "../classes/AppError"
 import { MESSAGES } from "../constants/messages"
@@ -6,8 +6,7 @@ import { MESSAGES } from "../constants/messages"
 const errorHandler = (
   err: AppError | AppError[],
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
 ) => {
   const response: { errors: { message: string }[] } = {
     errors: [],

@@ -13,9 +13,8 @@ const getEnvelopes = async (
   next: NextFunction
 ) => {
   try {
-    const queryResult = await new Envelope().getAllFromUser(
-      req.user?.id.toString()
-    )
+    const userId = req.user?.id.toString() as string
+    const queryResult = await new Envelope().getAllFromUser(userId)
 
     return res.json(queryResult.rows)
   } catch (error) {

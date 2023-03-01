@@ -5,7 +5,7 @@ import { MESSAGES } from "../../src/constants/messages"
 import { getPool } from "../../src/db"
 
 describe("POST", () => {
-  let app = createApp()
+  const app = createApp()
   let server: Server
 
   const route = "/auth"

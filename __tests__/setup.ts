@@ -1,4 +1,3 @@
-import { Server } from "http"
 import { QueryResult } from "pg"
 import createApp from "../createApp"
 import { getPool } from "../src/db"
@@ -10,10 +9,7 @@ import { User } from "../src/models/User.model"
 import { hashPassword } from "../src/utils/auth.utils"
 
 module.exports = async function () {
-  let app = createApp()
-  let server: Server
-
-  server = app.listen()
+  const server = createApp().listen()
 
   await createUsers()
   await createEnvelopes()
@@ -34,7 +30,7 @@ async function createUsers() {
       password: "password",
     },
   ]
-  let hashesPromises: Promise<string | null>[] = []
+  const hashesPromises: Promise<string | null>[] = []
 
   users.forEach((u) => hashesPromises.push(hashPassword(u.password, 1)))
 
@@ -98,7 +94,7 @@ async function createEnvelopes() {
     },
   ]
 
-  let promises: Promise<QueryResult<IEnvelope>>[] = []
+  const promises: Promise<QueryResult<IEnvelope>>[] = []
 
   envelopes.forEach((e) => promises.push(new Envelope().createEnvelope(e)))
 
@@ -169,7 +165,7 @@ async function createTransactions() {
     },
   ]
 
-  let promises: Promise<QueryResult<ITransaction>>[] = []
+  const promises: Promise<QueryResult<ITransaction>>[] = []
 
   transactions.forEach((t) =>
     promises.push(new Transaction().createTransaction(t))
