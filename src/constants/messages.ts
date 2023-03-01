@@ -14,7 +14,8 @@ export const MESSAGES = {
       "envelope_limit is required and must be a positive float number",
     ENVELOPE_LIMIT_TYPE: "envelope_limit must be a positive float number",
     CREATION_SUCCESSFUL: "Envelope created successfully",
-    NEW_AMOUNT_GREATER_THAN_LIMIT: "The new amount would exceed the envelope's limit"
+    NEW_AMOUNT_GREATER_THAN_LIMIT:
+      "The new amount would exceed the envelope's limit",
   },
   TRANSACTIONS: {
     CREATION_SUCCESSFUL: "Transaction created successfully",
@@ -22,8 +23,7 @@ export const MESSAGES = {
   VALIDATION: {
     INCLUDE_VALID_BODY: "Include a valid body in the request",
   },
-  AMOUNT_REQUIRED:
-    "amount is required and must be a positive float number",
+  AMOUNT_REQUIRED: "amount is required and must be a positive float number",
   PATH_ID_MUST_BE_INT: "id path variable must be an integer",
   QUERY_ID_MUST_BE_INT: "id query parameter must be an integer",
 }

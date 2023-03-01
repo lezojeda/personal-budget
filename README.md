@@ -3,16 +3,19 @@
 This is a project created as part of the [Codecademy Back-end Engineer career path](https://join.codecademy.com/learn/paths/back-end-engineer-career-path/).
 
 ## Table of Contents
+
 - [Getting Started](#getting-started)
 - [Basic Usage](#basic-usage)
 - [Documentation](#documentation)
 - [Testing](#testing)
 
 ## Overview
+
 An API that allows clients to create and manage a personal budget. Using [Envelope Budgeting principles](https://www.thebalancemoney.com/what-is-envelope-budgeting-1293682), it allow users to manage budget envelopes and track the balance of each envelope.
 
 Built with:
-- Express using Typescript. 
+
+- Express using Typescript.
 - Passport for authentication
 - PostgreSQL for the database with the [node-pg](https://node-postgres.com/) package as driver.
 - `jest` and `supertest` for testing
@@ -96,6 +99,7 @@ All envelopes start with a `current_amount` of 0. As you make transactions, the 
 For more details, you can refer to the [documentation](#documentation).
 
 ## Documentation
+
 The API is documented using the `swagger-ui-express` package. The .json file can be found in the `docs` folder. With the project running the documentation can be accessed in the `/docs` endpoint
 
 ## Testing

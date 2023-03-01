@@ -1073,7 +1073,7 @@
           "salary": "$2,000.00",
           "savings": "$3,000.00",
           "username": "test2"
-      }
+        }
       },
       "ErrorResponse": {
         "type": "object",

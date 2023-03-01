@@ -45,7 +45,12 @@ const gitHubStrategy = new passportGithub2.Strategy(
     clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
     callbackURL: "http://localhost:3000/auth/github/callback",
   },
-  async (accessToken: string, refreshToken: string, profile: any, done: any) => {
+  async (
+    accessToken: string,
+    refreshToken: string,
+    profile: any,
+    done: any
+  ) => {
     const user = await new User().getByUsername(profile.username)
 
     if (user) {
