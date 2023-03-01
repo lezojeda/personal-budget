@@ -23,7 +23,7 @@ export const MESSAGES = {
     INCLUDE_VALID_BODY: "Include a valid body in the request",
   },
   AMOUNT_REQUIRED:
-    "current_amount is required and must be a positive float number",
+    "amount is required and must be a positive float number",
   PATH_ID_MUST_BE_INT: "id path variable must be an integer",
   QUERY_ID_MUST_BE_INT: "id query parameter must be an integer",
 }

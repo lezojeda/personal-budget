@@ -10,10 +10,7 @@ import {
   transferBudgets,
   updateEnvelopeById,
 } from "../controllers"
-import {
-  checkEnvelopeAccess,
-  handleValidationResult,
-} from "../middlewares"
+import { checkEnvelopeAccess, handleValidationResult } from "../middlewares"
 
 const envelopesRouter = express.Router()
 
@@ -30,9 +27,9 @@ envelopesRouter.post(
   "/",
   [
     body("name", MESSAGES.ENVELOPES.NAME_REQUIRED).trim().isString().notEmpty(),
-    body("envelope_limit", MESSAGES.ENVELOPES.ENVELOPE_LIMIT_REQUIRED)
-      .trim()
-      .isFloat({ min: 0 }),
+    body("envelope_limit", MESSAGES.ENVELOPES.ENVELOPE_LIMIT_REQUIRED).isFloat({
+      min: 0,
+    }),
   ],
   handleValidationResult,
   createEnvelope
@@ -48,8 +45,8 @@ envelopesRouter.post(
     query(
       "to",
       "Include a query parameter indicating the envelope id to transfer TO"
-    ).isString(),
-    body("amount", "Include an amount which must be a number").trim().isFloat(),
+    ).isInt(),
+    body("amount", "Include an amount which must be a number").isFloat(),
   ],
   handleValidationResult,
   transferBudgets
@@ -63,15 +60,11 @@ envelopesRouter.patch(
   "/:id",
   [
     body("name", MESSAGES.ENVELOPES.NAME_TYPE)
-      .trim()
       .isString()
-      .optional({ checkFalsy: true })
-      .escape(),
+      .optional({ checkFalsy: true }),
     body("envelope_limit", MESSAGES.ENVELOPES.ENVELOPE_LIMIT_TYPE)
-      .trim()
       .isFloat({ min: 0 })
-      .optional({ checkFalsy: true })
-      .escape(),
+      .optional({ checkFalsy: true }),
   ],
   handleValidationResult,
   updateEnvelopeById
@@ -79,7 +72,7 @@ envelopesRouter.patch(
 
 envelopesRouter.post(
   "/:id/transactions",
-  body("amount", MESSAGES.AMOUNT_REQUIRED).trim().isFloat({ min: 0 }),
+  body("amount", MESSAGES.AMOUNT_REQUIRED).isFloat({ min: 0 }),
   handleValidationResult,
   createEnvelopeTransaction
 )

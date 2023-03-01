@@ -10,14 +10,12 @@ usersRouter.patch(
   [
     body("savings", "savings must be a number")
       .trim()
-      .isString()
-      .optional({ checkFalsy: true })
-      .escape(),
+      .isFloat({ min: 0 })
+      .optional({ checkFalsy: true }),
     body("salary", "salary must be a number")
       .trim()
-      .isFloat()
-      .optional({ checkFalsy: true })
-      .escape(),
+      .isFloat({ min: 0 })
+      .optional({ checkFalsy: true }),
     body("username", "username must be a string")
       .trim()
       .isString()
