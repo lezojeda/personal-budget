@@ -30,7 +30,7 @@ async function createUsers() {
       password: "password",
     },
   ]
-  const hashesPromises: Promise<string | null>[] = []
+  const hashesPromises: Promise<string>[] = []
 
   users.forEach((u) => hashesPromises.push(hashPassword(u.password, 1)))
 

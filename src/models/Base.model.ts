@@ -5,7 +5,7 @@ import { TableNames } from "../db/constants"
 abstract class Base<T extends QueryResultRow> {
   public table: TableNames
 
-  public async create(columns: string[], values: string[]) {
+  public async create(columns: string[], values: (string | number)[]) {
     const transactionText = `INSERT INTO ${
       this.table
     }(${columns.join()}) VALUES(${values

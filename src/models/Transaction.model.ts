@@ -26,10 +26,7 @@ class Transaction extends Base<ITransaction> implements ITransaction {
     return queryResult
   }
 
-  public async getAllTransactionsFromUser(
-    userId?: string,
-    envelopeId?: string
-  ) {
+  public async getAllTransactionsFromUser(userId: string, envelopeId?: string) {
     let queryText = `
       SELECT id, amount, timestamp, envelope_id FROM ${this.table}
       WHERE user_id = $1`

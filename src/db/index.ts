@@ -16,7 +16,7 @@ const dbQuery = async <T extends QueryResultRow>(
 
 const executeTransaction = async <T extends QueryResultRow>(
   text: string,
-  values: string[]
+  values: (string | number)[]
 ) => {
   const client = await getDbPool().connect()
   try {

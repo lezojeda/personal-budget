@@ -192,7 +192,7 @@ describe("Envelopes", () => {
         const expectedBody = {
           errors: [
             {
-              message: MESSAGES.ENVELOPES.CURRENT_AMOUNT_REQUIRED,
+              message: MESSAGES.AMOUNT_REQUIRED,
             },
           ],
         }

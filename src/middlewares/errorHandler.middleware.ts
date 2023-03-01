@@ -1,4 +1,4 @@
-import { Request, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes"
 import { AppError } from "../classes/AppError"
 import { MESSAGES } from "../constants/messages"
@@ -6,7 +6,10 @@ import { MESSAGES } from "../constants/messages"
 const errorHandler = (
   err: AppError | AppError[],
   req: Request,
-  res: Response
+  res: Response,
+  // Next needed so express recognizes it as a middleware
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  next: NextFunction
 ) => {
   const response: { errors: { message: string }[] } = {
     errors: [],

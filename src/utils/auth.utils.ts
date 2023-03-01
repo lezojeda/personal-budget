@@ -1,14 +1,9 @@
 import { compare, genSalt, hash } from "bcrypt"
 
 const hashPassword = async (password: string, saltRounds: number) => {
-  try {
-    const salt = await genSalt(saltRounds)
+  const salt = await genSalt(saltRounds)
 
-    return await hash(password, salt)
-  } catch (error) {
-    console.error(error)
-  }
-  return null
+  return await hash(password, salt)
 }
 
 const comparePasswords = async (password: string, hash: string) => {

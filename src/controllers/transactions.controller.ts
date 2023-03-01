@@ -11,8 +11,9 @@ const getTransactions = async (
   next: NextFunction
 ) => {
   try {
+    const userId = req.user?.id.toString() as string
     const queryResult = await new Transaction().getAllTransactionsFromUser(
-      req.user?.id.toString(),
+      userId,
       req.query.envelopeId as string
     )
 
