@@ -67,7 +67,7 @@ describe("Envelopes", () => {
         const expectedBody = {
           errors: [
             {
-              message: MESSAGES.ID_MUST_BE_INT,
+              message: MESSAGES.PATH_ID_MUST_BE_INT,
             },
           ],
         }

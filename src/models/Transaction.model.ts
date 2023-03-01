@@ -26,11 +26,21 @@ class Transaction extends Base<ITransaction> implements ITransaction {
     return queryResult
   }
 
-  public async getAllTransactionsFromUser(userId?: string) {
-    const queryText = `
+  public async getAllTransactionsFromUser(
+    userId?: string,
+    envelopeId?: string
+  ) {
+    let queryText = `
       SELECT id, amount, timestamp, envelope_id FROM ${this.table}
       WHERE user_id = $1`
-    return await dbQuery<Transaction>(queryText, [userId])
+
+    const values = [userId]
+
+    if (envelopeId) {
+      values.push(envelopeId)
+      queryText = queryText + " AND envelope_id = $2"
+    }
+    return await dbQuery<Transaction>(queryText, values)
   }
 }
 

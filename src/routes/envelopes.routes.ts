@@ -1,4 +1,4 @@
-import express from "express"
+import express, { Request, Response, NextFunction } from "express"
 import { body, param, query } from "express-validator"
 import { MESSAGES } from "../constants/messages"
 import {
@@ -13,14 +13,13 @@ import {
 import {
   checkEnvelopeAccess,
   handleValidationResult,
-  validateRequestBody,
 } from "../middlewares"
 
 const envelopesRouter = express.Router()
 
 envelopesRouter.use(
   "/:id",
-  param("id", MESSAGES.ID_MUST_BE_INT).trim().isInt(),
+  param("id", MESSAGES.PATH_ID_MUST_BE_INT).trim().isInt(),
   handleValidationResult,
   checkEnvelopeAccess
 )
@@ -36,7 +35,6 @@ envelopesRouter.post(
       .isFloat({ min: 0 }),
   ],
   handleValidationResult,
-  validateRequestBody,
   createEnvelope
 )
 
@@ -76,7 +74,6 @@ envelopesRouter.patch(
       .escape(),
   ],
   handleValidationResult,
-  validateRequestBody,
   updateEnvelopeById
 )
 
@@ -84,7 +81,6 @@ envelopesRouter.post(
   "/:id/transactions",
   body("amount", MESSAGES.AMOUNT_REQUIRED).trim().isFloat({ min: 0 }),
   handleValidationResult,
-  validateRequestBody,
   createEnvelopeTransaction
 )
 

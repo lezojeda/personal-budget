@@ -446,6 +446,15 @@
       "get": {
         "tags": ["transactions"],
         "summary": "Gets all the transactions from the signed in user",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "envelopeId",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "operationId": "getTransactions",
         "responses": {
           "200": {
@@ -474,6 +483,9 @@
                 ]
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400BadRequest"
           },
           "401": {
             "$ref": "#/components/responses/401Unauthorized"

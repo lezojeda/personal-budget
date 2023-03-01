@@ -24,5 +24,6 @@ export const MESSAGES = {
   },
   AMOUNT_REQUIRED:
     "current_amount is required and must be a positive float number",
-  ID_MUST_BE_INT: "id path variable must be an integer",
+  PATH_ID_MUST_BE_INT: "id path variable must be an integer",
+  QUERY_ID_MUST_BE_INT: "id query parameter must be an integer",
 }

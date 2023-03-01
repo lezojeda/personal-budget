@@ -1,5 +1,5 @@
 import express from "express"
-import { body, param } from "express-validator"
+import { body, param, query } from "express-validator"
 import { MESSAGES } from "../constants/messages"
 import {
   deleteTransactionById,
@@ -13,7 +13,7 @@ const transactionsRouter = express.Router()
 
 transactionsRouter.use(
   "/:id",
-  param("id", MESSAGES.ID_MUST_BE_INT).trim().isInt(),
+  param("id", MESSAGES.PATH_ID_MUST_BE_INT).trim().isInt(),
   handleValidationResult,
   checkTransactionAccess
 )
@@ -21,7 +21,12 @@ transactionsRouter.use(
 /**
  * TODO: Add optional query param to filter by envelope
  */
-transactionsRouter.get("/", getTransactions)
+transactionsRouter.get(
+  "/",
+  query("envelopeId", MESSAGES.QUERY_ID_MUST_BE_INT).isInt().optional(),
+  handleValidationResult,
+  getTransactions
+)
 
 transactionsRouter.get("/:id", getTransactionById)
 

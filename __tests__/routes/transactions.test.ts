@@ -39,6 +39,23 @@ describe("Transactions", () => {
         expect(response.statusCode).toEqual(200)
         expect(response.body.length).toBeGreaterThanOrEqual(10)
       })
+
+      it("should return the transactions associated to the envelope id passed as query param", async () => {
+        // Create transaction for envelope 2
+        await supertest(app)
+          .post("/envelopes/2/transactions")
+          .set("Cookie", cookie)
+          .send({ amount: 10 })
+
+        const queryParam = { envelopeId: 2 }
+        const response = await supertest(app)
+          .get(route)
+          .query(queryParam)
+          .set("Cookie", cookie)
+
+        expect(response.statusCode).toEqual(200)
+        expect(response.body.length).toEqual(1)
+      })
     })
 
     describe("GET /transactions/:id", () => {
@@ -62,7 +79,7 @@ describe("Transactions", () => {
         const expectedBody = {
           errors: [
             {
-              message: MESSAGES.ID_MUST_BE_INT,
+              message: MESSAGES.PATH_ID_MUST_BE_INT,
             },
           ],
         }
@@ -78,7 +95,7 @@ describe("Transactions", () => {
 
     describe("PATCH /transactions/:id", () => {
       it("should return a 200 and the updated transaction", async () => {
-        const newAmount = 2
+        const newAmount = 1
 
         const transactionToUpdate = await supertest(app)
           .get(`${route}/5`)

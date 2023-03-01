@@ -12,7 +12,8 @@ const getTransactions = async (
 ) => {
   try {
     const queryResult = await new Transaction().getAllTransactionsFromUser(
-      req.user?.id.toString()
+      req.user?.id.toString(),
+      req.query.envelopeId as string
     )
 
     return res.json(queryResult.rows)
