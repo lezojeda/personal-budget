@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import { StatusCodes } from "http-status-codes"
 import { AppError } from "../classes/AppError"
+import { MESSAGES } from "../constants/messages"
 
 const errorHandler = (
   err: AppError | AppError[],
@@ -16,7 +17,10 @@ const errorHandler = (
     err.forEach((err) => response.errors.push({ message: err.message }))
     res.status(StatusCodes.BAD_REQUEST).json(response)
   } else {
-    if (err.isOperational) {
+    if (err instanceof SyntaxError) {
+      response.errors.push({ message: MESSAGES.VALIDATION.INCLUDE_VALID_BODY })
+      res.status(err.httpStatusCode ?? 500).json(response)
+    } else if (err.isOperational) {
       response.errors.push({ message: err.message })
       res.status(err.httpStatusCode ?? 500).json(response)
     } else {
