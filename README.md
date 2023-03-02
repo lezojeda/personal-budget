@@ -11,7 +11,7 @@ This is a project created as part of the [Codecademy Back-end Engineer career pa
 
 ## Overview
 
-An API that allows clients to create and manage a personal budget. Using [Envelope Budgeting principles](https://www.thebalancemoney.com/what-is-envelope-budgeting-1293682), it allow users to manage budget envelopes and track the balance of each envelope.
+An API that allows clients to create and manage a personal budget. Using [Envelope Budgeting principles](https://www.thebalancemoney.com/what-is-envelope-budgeting-1293682), it allow users to manage budget envelopes and track the balance of each one.
 
 Built with:
 
