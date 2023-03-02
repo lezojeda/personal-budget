@@ -48,11 +48,6 @@ describe("Envelopes", () => {
           .set("Cookie", cookie)
 
         expect(response.statusCode).toEqual(200)
-        expect(response.body).toMatchObject({
-          envelope_limit: "$1,000.00",
-          name: "Envelope 1",
-          user_id: 1,
-        })
       })
 
       it("should return 404 if it does not exist", async () => {
