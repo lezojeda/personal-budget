@@ -10,7 +10,11 @@ import {
   transferBudgets,
   updateEnvelopeById,
 } from "../controllers"
-import { checkEnvelopeAccess, handleValidationResult } from "../middlewares"
+import {
+  checkEnvelopeAccess,
+  envelopesErrorHandler,
+  handleValidationResult,
+} from "../middlewares"
 
 const envelopesRouter = express.Router()
 
@@ -67,14 +71,16 @@ envelopesRouter.patch(
       .optional({ checkFalsy: true }),
   ],
   handleValidationResult,
-  updateEnvelopeById
+  updateEnvelopeById,
+  envelopesErrorHandler
 )
 
 envelopesRouter.post(
   "/:id/transactions",
   body("amount", MESSAGES.AMOUNT_REQUIRED).isFloat({ min: 0 }),
   handleValidationResult,
-  createEnvelopeTransaction
+  createEnvelopeTransaction,
+  envelopesErrorHandler
 )
 
 export { envelopesRouter }

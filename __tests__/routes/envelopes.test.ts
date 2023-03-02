@@ -208,7 +208,7 @@ describe("Envelopes", () => {
         const expectedBody = {
           errors: [
             {
-              message: MESSAGES.ENVELOPES.NEW_AMOUNT_GREATER_THAN_LIMIT,
+              message: MESSAGES.ENVELOPES.AMOUNT_GREATER_THAN_LIMIT,
             },
           ],
         }

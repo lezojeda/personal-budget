@@ -14,8 +14,8 @@ export const MESSAGES = {
       "envelope_limit is required and must be a positive float number",
     ENVELOPE_LIMIT_TYPE: "envelope_limit must be a positive float number",
     CREATION_SUCCESSFUL: "Envelope created successfully",
-    NEW_AMOUNT_GREATER_THAN_LIMIT:
-      "The new amount would exceed the envelope's limit",
+    AMOUNT_GREATER_THAN_LIMIT:
+      "The envelope's amount cannot exceed its limit nor the limit can be lower than the envelope's actual amount",
   },
   TRANSACTIONS: {
     CREATION_SUCCESSFUL: "Transaction created successfully",

@@ -165,20 +165,6 @@ const createEnvelopeTransaction = async (
       })
     }
   } catch (error) {
-    if (error instanceof Error) {
-      const newAmountGreaterThanEnvelopeLimitConstraint =
-        "constraint" in error &&
-        error.constraint === "current_amount_within_envelope_limit"
-
-      if (newAmountGreaterThanEnvelopeLimitConstraint) {
-        return next(
-          new AppError({
-            message: MESSAGES.ENVELOPES.NEW_AMOUNT_GREATER_THAN_LIMIT,
-            httpStatusCode: StatusCodes.BAD_REQUEST,
-          })
-        )
-      }
-    }
     next(error)
   }
 }
