@@ -15,8 +15,9 @@ An API that allows clients to create and manage a personal budget. Using [Envelo
 
 Built with:
 
-- Express using Typescript.
-- Passport for authentication
+- Typescript
+- Express
+- Passport for authentication/authorization
 - PostgreSQL for the database with the [node-pg](https://node-postgres.com/) package as driver.
 - `jest` and `supertest` for testing
 
